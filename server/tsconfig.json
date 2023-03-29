@@ -1,0 +1,5 @@
+{
+  "extends": ["@tsconfig/node18/tsconfig", "@tsconfig/esm/tsconfig.json"],
+  "compilerOptions": {},
+  "include": ["**/*.ts"]
+}
