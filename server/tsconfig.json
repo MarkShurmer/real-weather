@@ -1,5 +1,19 @@
 {
-  "extends": ["@tsconfig/node18/tsconfig", "@tsconfig/esm/tsconfig.json"],
-  "compilerOptions": {},
-  "include": ["**/*.ts"]
+  "extends": "@tsconfig/node18/tsconfig",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "ESNext",
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "paths": {
+      "db": ["src/db/index.ts"],
+      "db/*": ["src/db/*"],
+      "common/*": ["src/common/*"],
+      "settings/*": ["src/settings/*"],
+      "settings": ["src/settings/index.ts"],
+      "db-migrations/*": ["db-migrations/*"],
+      "@config/*": ["config/*"]
+    }
+  },
+  "include": ["src/**/*.*ts"]
 }
