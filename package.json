@@ -11,5 +11,6 @@
     "prepare": "husky install",
     "lint": "yarn workspaces run lint",
     "test:ci": "yarn workspaces run test:ci"
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }
