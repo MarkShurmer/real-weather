@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
-import { mainRoutes } from './main-routes';
+import { mainRoutes } from './main/main-routes';
 
 const app: FastifyInstance = Fastify({
-  logger: process.env.NODE_ENV === 'development',
+  logger: true,
 });
 
 app.register(mainRoutes);

@@ -9,6 +9,7 @@
       "db": ["src/db/index.ts"],
       "db/*": ["src/db/*"],
       "common/*": ["src/common/*"],
+      "main/*": ["src/main/*"],
       "settings/*": ["src/settings/*"],
       "settings": ["src/settings/index.ts"],
       "db-migrations/*": ["db-migrations/*"],
@@ -16,4 +17,5 @@
     }
   },
   "include": ["src/**/*.*ts"]
+  // "exclude": ["src/**/*.test.ts"]
 }

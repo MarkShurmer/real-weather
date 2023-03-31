@@ -1,5 +1,5 @@
-export const enum Routes {
-    Root = '/',
-    Health = '/health',
-    Levels = '/levels',
+/* eslint-disable no-unused-vars */
+export enum Routes {
+  Root = '/',
+  Health = '/health',
 }

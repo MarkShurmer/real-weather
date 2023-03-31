@@ -1,7 +1,6 @@
 {
   "env": {
-    "node": true,
-    "vitest": true
+    "node": true
   },
   "root": true,
   "parser": "@typescript-eslint/parser",
@@ -16,5 +15,11 @@
     // "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "rules": {}
+  "rules": {},
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "rules": {}
+    }
+  ]
 }

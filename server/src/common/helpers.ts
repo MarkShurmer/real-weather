@@ -1,7 +1,7 @@
 export function toPascalCase(s: string) {
-    return s.replace(/(\w)(\w*)/g, function (g0, g1, g2) {
-        return g1.toUpperCase() + g2.toLowerCase();
-    });
+  return s.replace(/(\w)(\w*)/g, function (g0, g1, g2) {
+    return g1.toUpperCase() + g2.toLowerCase();
+  });
 }
 
 /**
@@ -34,5 +34,5 @@ export function toPascalCase(s: string) {
 //     return { user };
 // }
 
-export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
-    Object.assign({}, state, changes);
+// export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
+//     Object.assign({}, state, changes);
