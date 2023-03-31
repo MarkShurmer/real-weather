@@ -17,6 +17,7 @@
     "@tsconfig/esm": "^1.0.2",
     "@tsconfig/node18": "^1.0.1",
     "@types/node": "^18.15.11",
+    "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "@vitest/coverage-c8": "^0.29.8",
@@ -36,6 +37,7 @@
     "audit": "yarn audit-ci -h",
     "lint": "eslint ./src/**/*.ts",
     "dev": "NODE_ENV=development tsx watch src | pino-pretty",
-    "start": "tsx src/index.mts"
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc"
   }
 }

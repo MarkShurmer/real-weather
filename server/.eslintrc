@@ -15,5 +15,11 @@
     // "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "rules": {}
+  "rules": {},
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "rules": {}
+    }
+  ]
 }
