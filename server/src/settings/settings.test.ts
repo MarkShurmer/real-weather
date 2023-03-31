@@ -67,9 +67,23 @@ describe('Settings', () => {
     });
   });
 
+  type BufferEncoding =
+    | 'ascii'
+    | 'utf8'
+    | 'utf-8'
+    | 'utf16le'
+    | 'ucs2'
+    | 'ucs-2'
+    | 'base64'
+    | 'base64url'
+    | 'latin1'
+    | 'binary'
+    | 'hex';
+
   describe('App settings', () => {
     const mockedReadFile =
-      vi.mocked<(path: PathLike, encoding: BufferEncoding) => Promise<string>>(
+      // eslint-disable-next-line no-unused-vars
+      vi.mocked<(path: PathLike, enc: BufferEncoding) => Promise<string>>(
         readFile
       );
 

@@ -33,7 +33,7 @@
     "test": "vitest",
     "test:ci": "vitest run --coverage",
     "audit": "yarn audit-ci -h",
-    "lint": "eslint .",
+    "lint": "eslint ./src/**/*.ts",
     "dev": "NODE_ENV=development tsx watch src | pino-pretty",
     "start": "tsx src/index.mts"
   }

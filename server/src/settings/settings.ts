@@ -26,7 +26,6 @@ export async function loadSettings() {
   const settings =
     (await getFile(`${process.env.NODE_ENV}.json`)) ??
     (await getFile(`default.json`));
-  console.log('++++ ', settings);
 
   if (!settings) {
     throw new Error(`Unable to load settings for ${process.env.NODE_ENV}`);

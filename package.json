@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "workspaces": [
+    "server",
+    "client-mobile"
+  ],
+  "devDependencies": {
+    "husky": "^8.0.3"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "yarn workspaces run lint",
+    "test:ci": "yarn workspaces run test:ci"
+  }
+}
