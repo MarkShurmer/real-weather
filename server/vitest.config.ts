@@ -13,5 +13,12 @@ export default defineConfig({
     //setupFiles: 'setup/setupTests.ts',
     // dir: './src'
     // includeSource: ['src/**/*.{js,ts,tsx}'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+      lines: 80,
+      functions: 80,
+      branches: 80,
+      statements: 80,
+    },
   },
 });
