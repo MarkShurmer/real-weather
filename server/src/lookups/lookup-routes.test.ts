@@ -26,7 +26,6 @@ describe('Lookup routes', () => {
   });
 
   it('should get message when error from handler', async () => {
-    console.log('+= ', mockedConvert);
     const error = new Error('Invalid');
     mockedConvert.mockRejectedValue(error);
 

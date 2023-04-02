@@ -94,13 +94,11 @@ test('getWeatherFromStation - should error when api call fails', async () => {
   //   partiallyMock<CancelableRequest>({ json: mockedObservations })
   // );
 
-  const result = await getWeatherFromStation({
-    longitude: -0.3037457177660413, // surbiton ,
-    latitude: 51.39281460811332,
-  });
-  expect(result).toEqual(weatherObservation.SiteRep);
-  expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url);
-  expect(mockedGot).toHaveBeenCalledWith(
-    `${Observations_Url.replace(':locationId', '3781')}`
-  );
+  await expect(
+    async () =>
+      await getWeatherFromStation({
+        longitude: -0.3037457177660413, // surbiton ,
+        latitude: 51.39281460811332,
+      })
+  ).rejects.toThrowError('Failed');
 });
