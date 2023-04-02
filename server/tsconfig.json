@@ -10,6 +10,7 @@
       "db/*": ["src/db/*"],
       "common/*": ["src/common/*"],
       "main/*": ["src/main/*"],
+      "lookups/*": ["src/lookups/*"],
       "settings/*": ["src/settings/*"],
       "settings": ["src/settings/index.ts"],
       "db-migrations/*": ["db-migrations/*"],

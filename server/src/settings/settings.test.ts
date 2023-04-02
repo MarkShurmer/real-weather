@@ -122,7 +122,7 @@ describe('Settings', () => {
     });
 
     it('should get default values when env set to garbage', async () => {
-      // @ts-expect-error
+      // @ts-expect-error: unassigned value
       process.env.NODE_ENV = 'garbage';
       mockedReadFile.mockResolvedValueOnce(JSON.stringify(defaultSettings));
       const settingsMod = await import('settings');
@@ -131,7 +131,7 @@ describe('Settings', () => {
     });
 
     it('should get error when cannot load config', async () => {
-      // @ts-expect-error
+      // @ts-expect-error: undefined where shouldnt be
       mockedReadFile.mockResolvedValue(undefined);
 
       await expect(async () => {
@@ -140,14 +140,13 @@ describe('Settings', () => {
     });
 
     it('should get error when cannot load config due to exception', async () => {
-      // @ts-expect-error
-      process.env.NODE_ENV = 'garbage';
+      process.env.NODE_ENV = 'test';
       mockedReadFile.mockRejectedValue(new Error('A new error'));
       const settingsMod = await import('settings');
 
       await expect(async () => {
         await settingsMod.getSettings();
-      }).rejects.toThrowError('Unable to load settings for garbage');
+      }).rejects.toThrowError('Unable to load settings for test');
     });
   });
 });
