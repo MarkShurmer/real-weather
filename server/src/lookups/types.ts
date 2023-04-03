@@ -102,3 +102,45 @@ export interface ParamsInterface {
   postcode: string;
 }
 export type WeatherRequest = FastifyRequest<{ Params: ParamsInterface }>;
+
+export type WeatherPeriod = {
+  windGust: number;
+  temperature: number;
+  visibility: number;
+  windDirection: CompassPoints;
+  windSpeed: number;
+  weatherType: string;
+  pressure: number;
+  pressureTendency: number;
+  dewPoint: number;
+  humidity: number;
+};
+
+export enum CompassPoints {
+  N,
+  NNE,
+  NE,
+  ENE,
+  E,
+  ESE,
+  SE,
+  SSE,
+  S,
+  SSW,
+  SW,
+  WSW,
+  W,
+  WNW,
+  NW,
+  NNW,
+}
+
+export type Weather = {
+  locationId: number;
+  date: Date;
+  latLong: GPS;
+  name: string;
+  elevation: number;
+  periods: Array<WeatherPeriod>;
+  units: Array<WeatherParam>;
+};

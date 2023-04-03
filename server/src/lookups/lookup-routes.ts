@@ -1,6 +1,9 @@
 import { Routes } from 'common/routes';
 import type { FastifyInstance } from 'fastify';
-import { convertPostcodeToGps } from 'lookups/lookup-service';
+import {
+  convertPostcodeToGps,
+  getWeatherFromStation,
+} from 'lookups/lookup-service';
 import { ParamsInterface, WeatherRequest } from './types';
 
 export async function weatherHandler(request: WeatherRequest) {
@@ -8,8 +11,9 @@ export async function weatherHandler(request: WeatherRequest) {
 
   try {
     const latLong = await convertPostcodeToGps(postcode);
+    const weather = await getWeatherFromStation(latLong);
     console.log(`l & l is ${latLong.latitude} ${latLong.longitude}`);
-    return latLong;
+    return weather;
   } catch (err) {
     request.log.error(err);
     return 'Unable to use that postcode';

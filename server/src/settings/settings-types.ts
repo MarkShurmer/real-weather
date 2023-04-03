@@ -42,8 +42,9 @@
 // }
 
 export type AppSettings = {
-    port: number;
-    host: string;
-    auth0Domain: string;
-    databaseUri: string;
+  port: number;
+  host: string;
+  auth0Domain: string;
+  databaseUri: string;
+  apiKey: string;
 };

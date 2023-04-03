@@ -1,6 +1,7 @@
 {
-    "port": 4000,
-    "host": "localhost",
-    "auth0Domain": "dev-revplanner.uk.auth0.com",
-    "databaseUri": "mongodb://127.0.0.1:27017/RevisionPlanner?authSource=admin"
+  "port": 4000,
+  "host": "localhost",
+  "auth0Domain": "dev-revplanner.uk.auth0.com",
+  "databaseUri": "mongodb://127.0.0.1:27017/RevisionPlanner?authSource=admin",
+  "apiKey": ""
 }

@@ -14,6 +14,7 @@ import {
   WeatherResponse,
 } from './types';
 import { getDistance } from 'geolib';
+import { getSettings } from 'settings/settings';
 
 export async function convertPostcodeToGps(postcode: string) {
   const info = await got
@@ -48,14 +49,14 @@ export async function convertPostcodeToGps(postcode: string) {
 //   }
 
 export async function getWeatherFromStation(refPoint: GPS) {
+  const settings = await getSettings();
   const sitesResponse = await got
-    .get(`${Observations_Sites_Url}`)
+    .get(`${Observations_Sites_Url}`, {
+      searchParams: `key=${settings.apiKey}`,
+    })
     .json<ObseervableSiteResponse>();
 
-  //const sitesWithDistance = addDistanceToSites(sites, refPoint);
-
-  // work out lowest
-  //const sortedSites = sitesWithDistance.sort((lhs, rhs) => lhs.distance - rhs.distance);
+  // work out nearest
   const nearestSite = getNearestSite(
     sitesResponse.Locations.Location,
     refPoint
@@ -64,7 +65,13 @@ export async function getWeatherFromStation(refPoint: GPS) {
   // get observations for the site
   const obs = await got
     .get(
-      `${Observations_Url.replace(':locationId', nearestSite.id.toString())}`
+      `${Observations_Url.replace(':locationId', nearestSite.id.toString())}`,
+      {
+        searchParams: new URLSearchParams({
+          key: settings.apiKey,
+          res: 'hourly',
+        }),
+      }
     )
     .json<WeatherResponse>();
 

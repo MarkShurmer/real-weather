@@ -1,3 +1,5 @@
 import { app } from '../app';
 
-export const logger = app.log;
+export function logger() {
+  return app.log;
+}
