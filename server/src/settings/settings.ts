@@ -34,7 +34,7 @@ export async function loadSettings() {
   appSettings = JSON.parse(settings);
   appSettings.apiKey = process.env.API_KEY ?? '';
 
-  logger().info(`Loaded settings for ${process.env.NODE_ENV}`);
+  logger.info(`Loaded settings for ${process.env.NODE_ENV}`);
 }
 
 export function isDev() {

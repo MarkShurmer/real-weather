@@ -1,5 +1,6 @@
-import { app } from '../app';
+import pino from 'pino';
 
-export function logger() {
-  return app.log;
-}
+export const logger = pino({
+  name: 'Real weather',
+  level: 'debug',
+});

@@ -103,6 +103,19 @@ describe('Settings', () => {
       expect(await settingsMod.getSettings()).toEqual(testSettings);
     });
 
+    it('should get test values when env running as test and use api key', async () => {
+      process.env.NODE_ENV = 'test';
+      process.env.API_KEY = 'abcd';
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(testSettings));
+      const settingsMod = await import('settings');
+
+      expect(await settingsMod.getSettings()).toEqual({
+        ...testSettings,
+        apiKey: 'abcd',
+      });
+      delete process.env.API_KEY;
+    });
+
     it('should get default values when env running as undefined', async () => {
       delete process.env.NODE_ENV;
       mockedReadFile.mockResolvedValueOnce(JSON.stringify(defaultSettings));
