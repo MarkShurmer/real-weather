@@ -11,9 +11,7 @@ export async function weatherHandler(request: WeatherRequest) {
 
   try {
     const latLong = await convertPostcodeToGps(postcode);
-    const weather = await getWeatherFromStation(latLong);
-    console.log(`l & l is ${latLong.latitude} ${latLong.longitude}`);
-    return weather;
+    return await getWeatherFromStation(latLong);
   } catch (err) {
     request.log.error(err);
     return 'Unable to use that postcode';

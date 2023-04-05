@@ -11,7 +11,11 @@ import {
   ObservationLocation,
   PostCodeErrorResponse,
   PostCodeResponse,
+  Weather,
+  WeatherRangeVector,
   WeatherResponse,
+  WeatherType,
+  WeatherUnits,
 } from './types';
 import { getDistance } from 'geolib';
 import { getSettings } from 'settings/settings';
@@ -48,6 +52,79 @@ export async function convertPostcodeToGps(postcode: string) {
 //     return dist
 //   }
 
+function translateVisibility(visibility: string): WeatherRangeVector {
+  switch (visibility) {
+    case 'UN':
+      return { from: 0, to: 0, units: WeatherUnits.direction };
+    case 'VP':
+      return { from: 0, to: 1, units: WeatherUnits.direction };
+    case 'PO':
+      return { from: 1, to: 4, units: WeatherUnits.direction };
+    case 'MO':
+      return { from: 4, to: 10, units: WeatherUnits.direction };
+    case 'GO':
+      return { from: 10, to: 20, units: WeatherUnits.direction };
+    case 'VG':
+      return { from: 20, to: 40, units: WeatherUnits.direction };
+    case 'EX':
+      return { from: 40, to: 100, units: WeatherUnits.direction };
+    default:
+      return {
+        from: parseInt(visibility) / 1000,
+        to: parseInt(visibility) / 1000,
+        units: WeatherUnits.distance,
+      };
+  }
+}
+
+export function mapWeatherData(response: WeatherResponse) {
+  const dataView = response.SiteRep.DV;
+  const period = dataView.Location.Period[dataView.Location.Period.length - 1];
+  const report = period.Rep[period.Rep.length - 1];
+  const units = response.SiteRep.Wx.Param;
+
+  const mapped: Weather = {
+    date: dataView.dataDate,
+    elevation: dataView.Location.elevation,
+    locationId: dataView.Location.i,
+    name: dataView.Location.name,
+    units: response.SiteRep.Wx.Param,
+    latLong: {
+      latitude: dataView.Location.lat,
+      longitude: dataView.Location.lon,
+    },
+    report: {
+      dewPoint: {
+        amount: report.Dp,
+        units: units.find((u) => u.name === 'Dp')?.units ?? '',
+      },
+      humidity: {
+        amount: report.H,
+        units: units.find((u) => u.name === 'H')?.units ?? '',
+      },
+      pressure: {
+        amount: report.P,
+        units: units.find((u) => u.name === 'P')?.units ?? '',
+      },
+      pressureTendency: report.Pt,
+      temperature: {
+        amount: report.T,
+        units: units.find((u) => u.name === 'T')?.units ?? '',
+      },
+      visibility: translateVisibility(report.V),
+      weatherType: WeatherType[report.W],
+      windDirection: report.D,
+      windGust: { amount: report.G, units: WeatherUnits.speed },
+      windSpeed: {
+        amount: report.S,
+        units: WeatherUnits.speed,
+      },
+    },
+  };
+
+  return mapped;
+}
+
 export async function getWeatherFromStation(refPoint: GPS) {
   const settings = await getSettings();
   const sitesResponse = await got
@@ -75,7 +152,7 @@ export async function getWeatherFromStation(refPoint: GPS) {
     )
     .json<WeatherResponse>();
 
-  return obs.SiteRep;
+  return mapWeatherData(obs);
 }
 
 function getNearestSite(sites: ObservationLocation[], refPoint: GPS) {
