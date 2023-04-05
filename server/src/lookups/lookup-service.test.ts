@@ -8,8 +8,18 @@ import { PostCodeResponse } from './types';
 import { PostCodeErrorResponse } from './types';
 import { partiallyMock } from 'common/helpers';
 import { weatherSites } from './__mocks__/waether-sites';
-import { weatherObservation } from './__mocks__/weather-observations';
+import {
+  weatherObsExcellentVisibility,
+  weatherObsGoodVisibility,
+  weatherObsModerateVisibility,
+  weatherObsPoorVisibility,
+  weatherObsUnknownVisibility,
+  weatherObsVeryGoodVisibility,
+  weatherObsVeryPoorVisibility,
+  weatherObservation,
+} from './__mocks__/weather-observations';
 import { Observations_Sites_Url, Observations_Url } from 'common/constants';
+import { weatherResult } from './__mocks__/weather-result';
 
 vi.mock('got');
 
@@ -56,10 +66,20 @@ test('getWeatherFromStation - should get obs for nearest site to edinburgh', asy
     longitude: -3.188526044893534, // edinburgh
     latitude: 55.954197513164644,
   });
-  expect(result).toEqual(weatherObservation.SiteRep);
-  expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url);
+
+  console.log('>> ', result, weatherResult);
+  expect(result).toEqual(weatherResult);
+  expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url, {
+    searchParams: 'key=',
+  });
   expect(mockedGot).toHaveBeenCalledWith(
-    `${Observations_Url.replace(':locationId', '3066')}`
+    `${Observations_Url.replace(':locationId', '3066')}`,
+    {
+      searchParams: new URLSearchParams({
+        key: '',
+        res: 'hourly',
+      }),
+    }
   );
 });
 
@@ -77,11 +97,152 @@ test('getWeatherFromStation - should get obs for nearest site to surbiton', asyn
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherObservation.SiteRep);
-  expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url);
+  expect(result).toEqual(weatherResult);
+  expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url, {
+    searchParams: 'key=',
+  });
   expect(mockedGot).toHaveBeenCalledWith(
-    `${Observations_Url.replace(':locationId', '3781')}`
+    `${Observations_Url.replace(':locationId', '3781')}`,
+    {
+      searchParams: new URLSearchParams({
+        key: '',
+        res: 'hourly',
+      }),
+    }
   );
+});
+
+test('getWeatherFromStation - should get obs for unknown visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsUnknownVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for very poor visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsVeryPoorVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for poor visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsPoorVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for moderate visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsModerateVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for good visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsGoodVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for very good visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsVeryGoodVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
+});
+
+test('getWeatherFromStation - should get obs for excellent visibility', async () => {
+  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = vi
+    .fn()
+    .mockResolvedValue(weatherObsExcellentVisibility);
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedSites })
+  );
+  mockedGot.mockReturnValueOnce(
+    partiallyMock<CancelableRequest>({ json: mockedObservations })
+  );
+
+  const result = await getWeatherFromStation({
+    longitude: -0.3037457177660413, // surbiton ,
+    latitude: 51.39281460811332,
+  });
+  expect(result).toEqual(weatherResult);
 });
 
 test('getWeatherFromStation - should error when api call fails', async () => {
