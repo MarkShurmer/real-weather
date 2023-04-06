@@ -103,6 +103,19 @@ describe('Settings', () => {
       expect(await settingsMod.getSettings()).toEqual(testSettings);
     });
 
+    it('should get test values when env running as test and use api key', async () => {
+      process.env.NODE_ENV = 'test';
+      process.env.API_KEY = 'abcd';
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(testSettings));
+      const settingsMod = await import('settings');
+
+      expect(await settingsMod.getSettings()).toEqual({
+        ...testSettings,
+        apiKey: 'abcd',
+      });
+      delete process.env.API_KEY;
+    });
+
     it('should get default values when env running as undefined', async () => {
       delete process.env.NODE_ENV;
       mockedReadFile.mockResolvedValueOnce(JSON.stringify(defaultSettings));
@@ -122,7 +135,7 @@ describe('Settings', () => {
     });
 
     it('should get default values when env set to garbage', async () => {
-      // @ts-expect-error
+      // @ts-expect-error: unassigned value
       process.env.NODE_ENV = 'garbage';
       mockedReadFile.mockResolvedValueOnce(JSON.stringify(defaultSettings));
       const settingsMod = await import('settings');
@@ -131,7 +144,7 @@ describe('Settings', () => {
     });
 
     it('should get error when cannot load config', async () => {
-      // @ts-expect-error
+      // @ts-expect-error: undefined where shouldnt be
       mockedReadFile.mockResolvedValue(undefined);
 
       await expect(async () => {
@@ -140,14 +153,13 @@ describe('Settings', () => {
     });
 
     it('should get error when cannot load config due to exception', async () => {
-      // @ts-expect-error
-      process.env.NODE_ENV = 'garbage';
+      process.env.NODE_ENV = 'test';
       mockedReadFile.mockRejectedValue(new Error('A new error'));
       const settingsMod = await import('settings');
 
       await expect(async () => {
         await settingsMod.getSettings();
-      }).rejects.toThrowError('Unable to load settings for garbage');
+      }).rejects.toThrowError('Unable to load settings for test');
     });
   });
 });

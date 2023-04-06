@@ -5,12 +5,12 @@ import type { FastifyInstance } from 'fastify';
  * Encapsulates the routes
  * @param {FastifyInstance} fastify  Encapsulated Fastify Instance
  */
-export function mainRoutes(fastify: FastifyInstance) {
-  fastify.get(Routes.Root, () => {
+export async function mainRoutes(fastify: FastifyInstance) {
+  await fastify.get(Routes.Root, () => {
     return 'Hello from real weather api';
   });
 
-  fastify.get(Routes.Health, () => {
+  await fastify.get(Routes.Health, () => {
     return {};
   });
 }

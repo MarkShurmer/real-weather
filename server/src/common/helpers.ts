@@ -36,3 +36,30 @@ export function toPascalCase(s: string) {
 
 // export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
 //     Object.assign({}, state, changes);
+
+/** Simple mocking inspired by https://www.npmjs.com/package/jest-mock-extended
+ * which has mockDeep<T>() for excellent autocompletion support but had other issues. */
+
+/* atomic values (not made Partial when mocking) */
+type Atomic = boolean | string | number | symbol | Date;
+
+/** Mocks an indexed type (e.g. Object or Array), making it recursively Partial - note question mark  */
+type PartialMockIndexed<T> = {
+  [P in keyof T]?: PartialMock<T[P]>;
+};
+
+/** Mock any T */
+export type PartialMock<T> = T extends Atomic ? T : PartialMockIndexed<T>;
+
+/** Utility method for autocompleting a PartialMock<T> and returning it as a T */
+export function partiallyMock<T>(mock: PartialMock<T>) {
+  return mock as T;
+}
+
+export function getEnumKeyByEnumValue(
+  myEnum: any,
+  enumValue: number | string
+): string {
+  const keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : '';
+}

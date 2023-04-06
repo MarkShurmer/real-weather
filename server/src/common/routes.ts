@@ -2,4 +2,5 @@
 export enum Routes {
   Root = '/',
   Health = '/health',
+  Weather = '/weather/:postcode',
 }

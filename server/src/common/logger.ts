@@ -1,3 +1,6 @@
-import { app } from '../app';
+import pino from 'pino';
 
-export const logger = app.log;
+export const logger = pino({
+  name: 'Real weather',
+  level: 'debug',
+});
