@@ -13,4 +13,20 @@ describe('Main routes', () => {
     expect(mockGet).toHaveBeenCalledWith(Routes.Root, expect.any(Function));
     expect(mockGet).toHaveBeenCalledWith(Routes.Health, expect.any(Function));
   });
+
+  it('should get message from root', async () => {
+    const mockGet = vi.fn();
+
+    await mainRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
+    const getFunction = mockGet.mock.calls[0][1];
+    expect(getFunction()).toBe('Hello from real weather api');
+  });
+
+  it('should get message from health', async () => {
+    const mockGet = vi.fn();
+
+    await mainRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
+    const getFunction = mockGet.mock.calls[1][1];
+    expect(getFunction()).toEqual({});
+  });
 });
