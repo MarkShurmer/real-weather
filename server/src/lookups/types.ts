@@ -194,5 +194,4 @@ export type Weather = {
   name: string;
   elevation: number;
   report: WeatherReport;
-  //units: Array<WeatherParam>;
 };

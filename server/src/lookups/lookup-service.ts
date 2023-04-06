@@ -38,19 +38,19 @@ export async function convertPostcodeToGps(postcode: string) {
 function translateVisibility(visibility: string): WeatherRangeVector {
   switch (visibility) {
     case 'UN':
-      return { from: 0, to: 0, units: WeatherUnits.direction };
+      return { from: 0, to: 0, units: WeatherUnits.distance };
     case 'VP':
-      return { from: 0, to: 1, units: WeatherUnits.direction };
+      return { from: 0, to: 1, units: WeatherUnits.distance };
     case 'PO':
-      return { from: 1, to: 4, units: WeatherUnits.direction };
+      return { from: 1, to: 4, units: WeatherUnits.distance };
     case 'MO':
-      return { from: 4, to: 10, units: WeatherUnits.direction };
+      return { from: 4, to: 10, units: WeatherUnits.distance };
     case 'GO':
-      return { from: 10, to: 20, units: WeatherUnits.direction };
+      return { from: 10, to: 20, units: WeatherUnits.distance };
     case 'VG':
-      return { from: 20, to: 40, units: WeatherUnits.direction };
+      return { from: 20, to: 40, units: WeatherUnits.distance };
     case 'EX':
-      return { from: 40, to: 100, units: WeatherUnits.direction };
+      return { from: 40, to: 100, units: WeatherUnits.distance };
     default:
       return {
         from: parseInt(visibility) / 1000,

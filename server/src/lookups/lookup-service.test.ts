@@ -67,7 +67,6 @@ test('getWeatherFromStation - should get obs for nearest site to edinburgh', asy
     latitude: 55.954197513164644,
   });
 
-  console.log('>> ', result, weatherResult);
   expect(result).toEqual(weatherResult);
   expect(mockedGot).toHaveBeenCalledWith(Observations_Sites_Url, {
     searchParams: 'key=',
@@ -128,7 +127,11 @@ test('getWeatherFromStation - should get obs for unknown visibility', async () =
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 0;
+  expectedResult.report.visibility.to = 0;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for very poor visibility', async () => {
@@ -147,7 +150,11 @@ test('getWeatherFromStation - should get obs for very poor visibility', async ()
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 0;
+  expectedResult.report.visibility.to = 1;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for poor visibility', async () => {
@@ -166,7 +173,11 @@ test('getWeatherFromStation - should get obs for poor visibility', async () => {
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 1;
+  expectedResult.report.visibility.to = 4;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for moderate visibility', async () => {
@@ -185,7 +196,11 @@ test('getWeatherFromStation - should get obs for moderate visibility', async () 
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 4;
+  expectedResult.report.visibility.to = 10;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for good visibility', async () => {
@@ -204,7 +219,11 @@ test('getWeatherFromStation - should get obs for good visibility', async () => {
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 10;
+  expectedResult.report.visibility.to = 20;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for very good visibility', async () => {
@@ -223,7 +242,11 @@ test('getWeatherFromStation - should get obs for very good visibility', async ()
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 20;
+  expectedResult.report.visibility.to = 40;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should get obs for excellent visibility', async () => {
@@ -242,7 +265,11 @@ test('getWeatherFromStation - should get obs for excellent visibility', async ()
     longitude: -0.3037457177660413, // surbiton ,
     latitude: 51.39281460811332,
   });
-  expect(result).toEqual(weatherResult);
+
+  const expectedResult = { ...weatherResult };
+  expectedResult.report.visibility.from = 40;
+  expectedResult.report.visibility.to = 100;
+  expect(result).toEqual(expectedResult);
 });
 
 test('getWeatherFromStation - should error when api call fails', async () => {
