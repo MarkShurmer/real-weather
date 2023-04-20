@@ -4,10 +4,10 @@
       "path": "server"
     },
     {
-      "path": "client-mobile"
+      "path": ".github"
     },
     {
-      "path": ".github"
+      "path": "clientMobile"
     }
   ],
   "settings": {}
