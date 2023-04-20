@@ -49,7 +49,7 @@ describe('Lookup routes', () => {
 
     const result = await weatherHandler(
       partiallyMock<WeatherRequest>({
-        params: { postcode: 'sw1e 1aa' },
+        query: { postcode: 'sw1e 1aa' },
         log: mockLog,
       })
     );
@@ -68,7 +68,7 @@ describe('Lookup routes', () => {
     } as unknown as Weather);
 
     const result = await weatherHandler(
-      partiallyMock<WeatherRequest>({ params: { postcode: 'sw1e 1aa' } })
+      partiallyMock<WeatherRequest>({ query: { postcode: 'sw1e 1aa' } })
     );
 
     expect(result).toEqual({
