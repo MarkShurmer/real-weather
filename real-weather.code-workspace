@@ -8,6 +8,9 @@
     },
     {
       "path": "clientMobile"
+    },
+    {
+      "path": "client-pwa"
     }
   ],
   "settings": {}

@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
 import {Button, Text} from '@rneui/themed';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import CurrentWeather from './CurrentWeather';
 import {useRecoilState} from 'recoil';
 import {weatherState} from './weather-atoms';
 import {WEATHER_API} from './api-contracts';
 import {Input} from '@rneui/base';
+import {ScrollView, SafeAreaView, View, StyleSheet} from 'react-native';
 
 export function Home() {
   const [error, setError] = useState('');
@@ -21,7 +20,7 @@ export function Home() {
 
   const loadInfo = async () => {
     try {
-      if (postCode.length >= 5) {
+      if (postCode.length > 5) {
         setError('');
         // const postCode = addrRef.current.props.value ?? '';
         const url = WEATHER_API.replace('${postCode}', postCode);
