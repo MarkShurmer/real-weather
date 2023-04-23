@@ -36,8 +36,8 @@
     "vitest": "^0.29.8"
   },
   "scripts": {
-    "test": "vitest",
-    "test:ci": "vitest run --coverage",
+    "test": "API_KEY= vitest",
+    "test:ci": "API_KEY= vitest run --coverage",
     "audit": "yarn audit-ci -h",
     "lint": "eslint ./src/**/*.ts",
     "dev": "NODE_ENV=development tsx watch src | pino-pretty",
