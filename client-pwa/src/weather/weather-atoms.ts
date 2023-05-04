@@ -1,7 +1,31 @@
-import {atom} from 'recoil';
-import {Weather} from './api-contracts';
+import { WEATHER_API } from '@/api/api-constants';
+import { Weather } from '@/api/api-contracts';
+import { atom, selector} from 'recoil';
 
-export const weatherState = atom<Weather>({
+export const postCodeAtom = atom<string>({
+  key: 'postcode',
+  default: ''
+})
+
+export const weatherState = selector<Weather | null>({
   key: 'weather',
-  default: undefined,
+  get: async ({ get }) => {
+    const postCode = get(postCodeAtom);
+    if (postCode.length >= 6) {
+      const url = WEATHER_API.replace('${postCode}', postCode);
+      console.log(url);
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json() as Weather;
+        return data;
+      }
+      const error = await response.text();
+      throw new Error(error);
+    }
+
+    return null;
+  }
+  
 });
+
+

@@ -16,7 +16,7 @@ export async function weatherHandler(
 
   try {
     const latLong = await convertPostcodeToGps(postcode);
-    return getWeatherFromStation(latLong);
+    return (await getWeatherFromStation(latLong));
   } catch (err) {
     request.log.error(err);
     reply.code(404);

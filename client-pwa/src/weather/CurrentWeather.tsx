@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { weatherState } from './weather-atoms';
-import { Weather, WeatherReport } from '@/api/api-contracts';
+import {  WeatherReport } from '@/api/api-contracts';
 import { weatherStyles } from '@weather/CurrentWeather.styles';
 import { css } from '@emotion/react';
 import Visibility from './Visibility';
@@ -12,10 +12,12 @@ function formatDate(date: string) {
   return format(asDate, 'HH:mm:ss'); // `${asDate.getHours()}:${asDate.getMinutes().toString()}:${asDate.getSeconds()}`;
 }
 
-export default function CurrentWeather() {
-  const weatherValue = useRecoilValue(weatherState) as Weather;
+const DEGREE_SYMBOL = '\u00B0';
 
-  if (!weatherValue) {
+export default function CurrentWeather() {
+  const weather = useRecoilValue(weatherState);
+
+  if (!weather) {
     return (
       <section css={css(weatherStyles.container)}>
         <div>Unable to retreive any current weather</div>
@@ -23,14 +25,14 @@ export default function CurrentWeather() {
     );
   }
 
-  const report = weatherValue?.report as WeatherReport;
+  const report = weather.report as WeatherReport;
 
   return (
     <section css={css(weatherStyles.container)}>
       <div css={css(weatherStyles.cardMain)}>
         <div css={css(weatherStyles.cardItem)}>Temperature</div>
         <div css={css(weatherStyles.cardItem)}>
-          {report.temperature.amount} {'\u00B0'}
+          {report.temperature.amount} {DEGREE_SYMBOL}
           {report.temperature.units}
         </div>
 
@@ -38,7 +40,7 @@ export default function CurrentWeather() {
         <div css={css(weatherStyles.cardItem)}>{report.weatherType}</div>
 
         <div css={css(weatherStyles.cardItem)}>Location</div>
-        <div css={css(weatherStyles.cardItem)}>{weatherValue.name}</div>
+        <div css={css(weatherStyles.cardItem)}>{weather.name}</div>
 
         <div css={css(weatherStyles.cardItem)}>Visibility</div>
         <div css={css(weatherStyles.cardItem)}>
@@ -47,28 +49,28 @@ export default function CurrentWeather() {
 
         <div css={css(weatherStyles.cardItem)}>Time</div>
         <div css={css(weatherStyles.cardItem)}>
-          {formatDate(weatherValue.date)}
+          {formatDate(weather.date)}
         </div>
 
         <div css={css(weatherStyles.cardItem)}>Pressure</div>
         <div css={css(weatherStyles.cardItem)}>
-          {weatherValue.report.pressure.amount}{' '}
-          {weatherValue.report.pressure.units}
+          {weather.report.pressure.amount}{' '}
+          {weather.report.pressure.units}
         </div>
 
         <div css={css(weatherStyles.cardItem)}>Humidity</div>
         <div css={css(weatherStyles.cardItem)}>
-          {weatherValue.report.humidity.amount}{' '}
-          {weatherValue.report.humidity.units}
+          {weather.report.humidity.amount}{' '}
+          {weather.report.humidity.units}
         </div>
 
         <div css={css(weatherStyles.cardItem)}>Wind</div>
         <div css={css(weatherStyles.cardItem)}>
-          {weatherValue.report.windDirection} {', '}
-          {weatherValue.report.windSpeed.amount}{' '}
-          {weatherValue.report.windSpeed.units} {' to '}
-          {weatherValue.report.windGust.amount}{' '}
-          {weatherValue.report.windGust.units}
+          {weather.report.windDirection} {', '}
+          {weather.report.windSpeed.amount}{' '}
+          {weather.report.windSpeed.units} {' to '}
+          {weather.report.windGust.amount}{' '}
+          {weather.report.windGust.units}
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, Suspense, useRef, useState } from 'react';
 import CurrentWeather from '@/weather/CurrentWeather';
-import { useRecoilState } from 'recoil';
-import { weatherState } from '@/weather/weather-atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { postCodeAtom, weatherState } from '@/weather/weather-atoms';
 import { useStyles } from '@/home/Home.styles';
 import { WEATHER_API } from '@/api/api-constants';
 import { Button } from 'primereact/button';
@@ -10,33 +10,36 @@ import { css } from '@emotion/react';
 
 export function Home() {
   const [error, setError] = useState('');
-  const [, setWeatherAtom] = useRecoilState(weatherState);
+
+  const [postCode, setPostCode] = useRecoilState(postCodeAtom);
   const styles = useStyles(error !== '');
   const addrRef = useRef<HTMLInputElement>(null);
 
   const loadInfo = async () => {
-    const postCode = addrRef.current?.value ?? '';
-    if (postCode.length < 6) {
+    const newPostCode = addrRef.current?.value ?? '';
+    if (newPostCode.length < 6) {
       setError('Must be full post code');
       return;
     }
 
-    try {
-      setError('');
-      setWeatherAtom(null);
-      const url = WEATHER_API.replace('${postCode}', postCode);
-      console.log(url);
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setWeatherAtom(data);
-      } else {
-        const error = await response.text();
-        setError(error);
-      }
-    } catch (err) {
-      setError(`Unable to retreive information`);
-    }
+    setPostCode(newPostCode);
+
+    // try {
+    //   setError('');
+    //   setWeatherAtom(null);
+    //   const url = WEATHER_API.replace('${postCode}', postCode);
+    //   console.log(url);
+    //   const response = await fetch(url);
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     setWeatherAtom(data);
+    //   } else {
+    //     const error = await response.text();
+    //     setError(error);
+    //   }
+    // } catch (err) {
+    //   setError(`Unable to retreive information`);
+    // }
   };
 
   return (
@@ -48,7 +51,10 @@ export function Home() {
         <InputText placeholder="Enter postcode" ref={addrRef} />
         <Button onClick={loadInfo}>Get weather</Button>
       </div>
-      <CurrentWeather />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CurrentWeather />
+      </Suspense>
+     
       <div css={css(styles.errorPanel)}>
         <div css={css(styles.errorText)}>{error}</div>
       </div>

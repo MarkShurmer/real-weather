@@ -16,5 +16,6 @@ export const weatherStyles = {
   },
   cardItem: {
     flex: 1,
+    margin: 10,
   },
 } as const;
