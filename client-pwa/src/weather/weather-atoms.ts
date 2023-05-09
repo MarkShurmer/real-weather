@@ -19,8 +19,6 @@ export const weatherState = selector<Weather | null>({
         const data = await response.json() as Weather;
         return data;
       }
-      const error = await response.text();
-      throw new Error(error);
     }
 
     return null;

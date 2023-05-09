@@ -7,14 +7,11 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import { RecoilRoot } from 'recoil';
 
-// console.log(
-//   ':: ',
-//   /localhost/.test(window.location.href),
-//   window.location.href
-// );
 if ('serviceWorker' in navigator && /localhost/.test(window.location.href)) {
   registerSW();
 }
+
+const app = document.getElementById('root');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
