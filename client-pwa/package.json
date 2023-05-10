@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "jest",
+    "test": "jest --watch",
     "test:ci": "jest --coverage"
   },
   "dependencies": {
@@ -26,14 +26,15 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.10.6",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@types/recoilize": "^0.8.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
+    "jest-extended": "^3.2.4",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3",

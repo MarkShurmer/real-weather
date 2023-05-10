@@ -19,7 +19,7 @@ export default function CurrentWeather() {
 
   if (!weather) {
     return (
-      <section css={css(weatherStyles.container)}>
+      <section css={css(weatherStyles.container)} role="status">
         <div>Unable to retreive any current weather</div>
       </section>
     );
@@ -28,7 +28,7 @@ export default function CurrentWeather() {
   const report = weather.report as WeatherReport;
 
   return (
-    <section css={css(weatherStyles.container)}>
+    <section css={css(weatherStyles.container)} role="main">
       <div css={css(weatherStyles.cardMain)}>
         <div css={css(weatherStyles.cardItem)}>Temperature</div>
         <div css={css(weatherStyles.cardItem)}>

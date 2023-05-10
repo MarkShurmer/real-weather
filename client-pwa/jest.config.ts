@@ -4,7 +4,7 @@ import { compilerOptions } from './tsconfig.json'
 import type { JestConfigWithTsJest } from 'ts-jest'
 
 const jestConfig: JestConfigWithTsJest = {
-
+  preset: "ts-jest",
 
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
@@ -30,8 +30,7 @@ const jestConfig: JestConfigWithTsJest = {
   roots: ['<rootDir>'],
   modulePaths: [compilerOptions.baseUrl], // <-- This will be set to 'baseUrl' value
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths /*, { prefix: '<rootDir>/' } */),
-
-}
-  ;
+  setupFilesAfterEnv: ['jest-extended/all', '<rootDir>/src/test-utils/jest-setup.ts']
+};
  
   export default jestConfig
