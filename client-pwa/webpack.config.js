@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const { CheckerPlugin } = require('awesome-typescript-loader');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: path.resolve(__dirname, 'src', 'index.tsx'),
@@ -8,13 +10,46 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
     },
+    devtool: 'inline-source-map',
     mode: 'development',
     module: {
         rules: [
+            // {
+            //     test: /\.jsx?$/,
+            //     use: ['babel-loader'],
+            //     exclude: /node_modules/,
+            // },
+            // {
+            //     test: /\.tsx?$/,
+            //     use: [
+            //         'babel-loader',
+            //         {
+            //             loader: 'ts-loader',
+            //             options: {
+            //                 onlyCompileBundledFiles: true,
+            //             },
+            //         },
+            //     ],
+            // },
             {
                 test: /\.[jt]sx?$/,
-                use: ['babel-loader'],
-                exclude: /node_modules/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env'],
+                        },
+                    },
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            compilerOptions: {
+                                noEmit: false,
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.css$/,
@@ -36,6 +71,7 @@ module.exports = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.jsx'],
+        plugins: [new TsconfigPathsPlugin({ configFile: path.join(__dirname, './tsconfig.json'), logLevel: 'info' })],
     },
     plugins: [
         new HtmlWebpackPlugin({

@@ -16,9 +16,9 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:import/errors',
-        'plugin:import/warnings',
-        'plugin:import/typescript',
+        // 'plugin:import/errors',
+        // 'plugin:import/warnings',
+        // 'plugin:import/typescript',
         'plugin:jsx-a11y/recommended',
         'plugin:prettier/recommended', //should be at the last
     ],

@@ -11,7 +11,6 @@ if ('serviceWorker' in navigator && /localhost/.test(window.location.href)) {
   registerSW();
 }
 
-const app = document.getElementById('root');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

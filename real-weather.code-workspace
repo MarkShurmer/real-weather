@@ -7,11 +7,13 @@
       "path": ".github"
     },
     {
-      "path": "clientMobile"
-    },
-    {
       "path": "client-pwa"
     }
   ],
-  "settings": {}
+  "settings": {
+    "jest.disabledWorkspaceFolders": [
+      "docs",
+      ".github"
+    ]
+  }
 }
