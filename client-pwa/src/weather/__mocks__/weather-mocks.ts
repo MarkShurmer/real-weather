@@ -1,5 +1,5 @@
 import { Weather } from '@/api/api-contracts';
-/** @type {*} */
+
 export const mockWeather: Weather = {
     date: new Date().toISOString(),
     elevation: 100,

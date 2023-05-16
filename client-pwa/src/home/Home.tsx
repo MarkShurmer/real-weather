@@ -14,30 +14,12 @@ export function Home() {
 
     const loadInfo = async () => {
         const newPostCode = addrRef.current?.value ?? '';
-        console.log(':: ', newPostCode);
         if (newPostCode.length < 6) {
             setError('Must be full post code');
             return;
         }
 
         setPostCode(newPostCode);
-
-        // try {
-        //   setError('');
-        //   setWeatherAtom(null);
-        //   const url = WEATHER_API.replace('${postCode}', postCode);
-        //   console.log(url);
-        //   const response = await fetch(url);
-        //   if (response.ok) {
-        //     const data = await response.json();
-        //     setWeatherAtom(data);
-        //   } else {
-        //     const error = await response.text();
-        //     setError(error);
-        //   }
-        // } catch (err) {
-        //   setError(`Unable to retreive information`);
-        // }
     };
 
     return (

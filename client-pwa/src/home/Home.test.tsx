@@ -3,7 +3,7 @@ import { Home } from '@/home/Home';
 import { MutableSnapshot } from 'recoil';
 import { postCodeAtom } from '@weather/weather-atoms';
 import { mockWeather } from '@/weather/__mocks__/weather-mocks';
-import { flushPromisesAndTimers, partiallyMock } from '@test-utils/test-helpers';
+import { partiallyMock } from '@test-utils/test-helpers';
 
 const initializeState = ({ set }: MutableSnapshot) => {
     set(postCodeAtom, 'sw1a 1ff');
@@ -16,14 +16,6 @@ describe('Home page', () => {
         );
     });
 
-    // beforeEach(() => {
-    //     jest.useFakeTimers();
-    // });
-
-    // afterEach(() => {
-    //     jest.useRealTimers();
-    // });
-
     it('should update postcode', async () => {
         render(<Home />, {}, initializeState);
 
@@ -32,8 +24,6 @@ describe('Home page', () => {
 
         fireEvent.change(postCodeInput, { target: { value: 'br28pp' } });
         fireEvent.click(cta);
-
-        // await flushPromisesAndTimers();
 
         await waitFor(() => screen.getByRole('main'));
         expect(screen.getByRole('main')).toBeInTheDocument();

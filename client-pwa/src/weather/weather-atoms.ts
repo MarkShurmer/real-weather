@@ -14,8 +14,8 @@ export const weatherState = selector<Weather | null>({
 
         if (postCode.length >= 6) {
             const url = WEATHER_API.replace('${postCode}', postCode);
-
             const response = await fetch(url);
+
             if (response.ok) {
                 const data = (await response.json()) as Weather;
 

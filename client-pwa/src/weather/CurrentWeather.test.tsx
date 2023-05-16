@@ -5,6 +5,7 @@ import { flushPromisesAndTimers, partiallyMock } from '@test-utils/test-helpers'
 import { MutableSnapshot } from 'recoil';
 import { postCodeAtom } from '@weather/weather-atoms';
 import { mockWeather } from './__mocks__/weather-mocks';
+import Loading from '@/loading/Loading';
 
 const initializeState = ({ set }: MutableSnapshot) => {
     set(postCodeAtom, 'sw1a 1ff');
@@ -30,7 +31,7 @@ describe('CurrentWeather component', () => {
             set(postCodeAtom, 'abc');
         };
         render(
-            <Suspense fallback={<div>loading</div>}>
+            <Suspense fallback={<Loading />}>
                 <CurrentWeather />
             </Suspense>,
             {},
@@ -43,7 +44,7 @@ describe('CurrentWeather component', () => {
 
     it('should show weather section when weather has been set', async () => {
         render(
-            <Suspense fallback={<div>loading...</div>}>
+            <Suspense fallback={<Loading />}>
                 <CurrentWeather />
             </Suspense>,
             {},
@@ -51,7 +52,7 @@ describe('CurrentWeather component', () => {
         );
         await flushPromisesAndTimers();
 
-        const loadingElements = await screen.queryByText('loading...');
+        const loadingElements = await screen.queryByText('Loading...');
 
         expect(screen.getByRole('main')).toBeInTheDocument();
         expect(loadingElements).toBeNull();
