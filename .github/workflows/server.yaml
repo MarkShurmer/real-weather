@@ -1,11 +1,10 @@
 name: 🚀 Server
 on:
-  push:
+  pull_request:
     branches:
-      - master
+      - main
     paths:
       - server/**/*
-  pull_request: {}
 permissions:
   actions: write
   contents: read
