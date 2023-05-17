@@ -1,8 +1,6 @@
 name: 🚀 Server
 on:
   pull_request:
-    branches:
-      - main
     paths:
       - server/**/*
 permissions:
