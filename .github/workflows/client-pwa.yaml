@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'client-pwa/**'
+      - '.github/workflows/client-pwa.yaml'
   pull_request: {}
 
 permissions:
@@ -16,7 +17,7 @@ jobs:
         name: ⬣ Verify
         runs-on: ubuntu-latest
         concurrency:
-            group: ${{ github.ref }}
+            group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: true
 
         steps:
