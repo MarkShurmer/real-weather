@@ -15,6 +15,7 @@ import {
 } from 'lookups/lookup-service';
 import { partiallyMock } from 'common/helpers';
 import { GPS, Weather, WeatherRequest } from 'lookups/types';
+import { FastifyInstance, FastifyReply } from 'fastify';
 
 vi.mock('lookups/lookup-service');
 
@@ -22,6 +23,7 @@ describe('Lookup routes', () => {
   let mockedConvert: MockedFunction<(postcode: string) => Promise<GPS>>;
   let mockedWeather: MockedFunction<typeof getWeatherFromStation>;
   const mockErrorLog = vi.fn();
+  const mockStatus = vi.fn();
   const mockLog = { error: mockErrorLog };
 
   beforeAll(() => {
@@ -37,10 +39,24 @@ describe('Lookup routes', () => {
   it('should register weather handler', async () => {
     const mockGet = vi.fn();
 
-    // @ts-expect-error: partial type
-    await lookupRoutes({ get: mockGet });
+    await lookupRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
 
-    expect(mockGet).toHaveBeenCalledWith(Routes.Weather, weatherHandler);
+    expect(mockGet).toHaveBeenCalledWith(
+      Routes.Weather,
+      {
+        schema: {
+          querystring: {
+            type: 'object',
+            properties: {
+              postcode: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+      weatherHandler
+    );
   });
 
   it('should get message when error from handler', async () => {
@@ -49,13 +65,15 @@ describe('Lookup routes', () => {
 
     const result = await weatherHandler(
       partiallyMock<WeatherRequest>({
-        params: { postcode: 'sw1e 1aa' },
+        query: { postcode: 'sw1e 1aa' },
         log: mockLog,
-      })
+      }),
+      partiallyMock<FastifyReply>({ code: mockStatus })
     );
 
     expect(result).toBe('Unable to use that postcode');
     expect(mockErrorLog).toHaveBeenCalledWith(error);
+    expect(mockStatus).toBeCalledWith(404);
   });
 
   it('should get geo position from handler', async () => {
@@ -68,7 +86,8 @@ describe('Lookup routes', () => {
     } as unknown as Weather);
 
     const result = await weatherHandler(
-      partiallyMock<WeatherRequest>({ params: { postcode: 'sw1e 1aa' } })
+      partiallyMock<WeatherRequest>({ query: { postcode: 'sw1e 1aa' } }),
+      partiallyMock<FastifyReply>({ code: mockStatus })
     );
 
     expect(result).toEqual({

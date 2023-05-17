@@ -19,6 +19,7 @@ import {
 } from './types';
 import { getDistance } from 'geolib';
 import { getSettings } from 'settings/settings';
+import { toPascalCase } from 'common/helpers';
 
 export async function convertPostcodeToGps(postcode: string) {
   const info = await got
@@ -70,7 +71,7 @@ export function mapWeatherData(response: WeatherResponse) {
     date: dataView.dataDate,
     elevation: dataView.Location.elevation,
     locationId: dataView.Location.i,
-    name: dataView.Location.name,
+    name: toPascalCase(dataView.Location.name),
     latLong: {
       latitude: dataView.Location.lat,
       longitude: dataView.Location.lon,

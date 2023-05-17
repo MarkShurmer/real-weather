@@ -1,0 +1,15 @@
+{
+  "short_name": "Real weather",
+  "name": "The weather as of now",
+  "icons": [
+    {
+      "src": "/images/icons-512.jpeg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

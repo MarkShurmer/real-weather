@@ -8,7 +8,7 @@ export const weatherResult: Weather = {
     longitude: -0.854,
   },
   locationId: 3002,
-  name: 'BALTASOUND',
+  name: 'Baltasound',
   report: {
     dewPoint: {
       amount: -1.2,

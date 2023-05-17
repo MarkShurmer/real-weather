@@ -536,7 +536,7 @@ export const weatherObsExcellentVisibility: WeatherResponse = {
         i: 3002,
         lat: 60.749,
         lon: -0.854,
-        name: 'BALTASOUND',
+        name: 'Baltasound',
         country: 'SCOTLAND',
         continent: 'EUROPE',
         elevation: 15.0,

@@ -98,10 +98,12 @@ export type WeatherLocation = {
   Period: Array<WeatherLocationPeriod>;
 };
 
-export interface ParamsInterface {
+export interface WeatherQueryInterface {
   postcode: string;
 }
-export type WeatherRequest = FastifyRequest<{ Params: ParamsInterface }>;
+export type WeatherRequest = FastifyRequest<{
+  Querystring: WeatherQueryInterface;
+}>;
 
 export const WeatherType: Record<number, string> = {
   0: 'Clear Night',

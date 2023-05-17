@@ -4,11 +4,16 @@
       "path": "server"
     },
     {
-      "path": "client-mobile"
+      "path": ".github"
     },
     {
-      "path": ".github"
+      "path": "client-pwa"
     }
   ],
-  "settings": {}
+  "settings": {
+    "jest.disabledWorkspaceFolders": [
+      "docs",
+      ".github"
+    ]
+  }
 }

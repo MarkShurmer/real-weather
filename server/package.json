@@ -8,6 +8,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@fastify/cors": "^8.2.1",
+    "@fastify/helmet": "^10.1.0",
     "@jest/globals": "^29.5.0",
     "fastify": "^4.15.0",
     "geolib": "^3.3.3",
@@ -34,8 +36,8 @@
     "vitest": "^0.29.8"
   },
   "scripts": {
-    "test": "vitest",
-    "test:ci": "vitest run --coverage",
+    "test": "API_KEY= vitest",
+    "test:ci": "API_KEY= vitest run --coverage",
     "audit": "yarn audit-ci -h",
     "lint": "eslint ./src/**/*.ts",
     "dev": "NODE_ENV=development tsx watch src | pino-pretty",
