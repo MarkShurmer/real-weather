@@ -1,9 +1,10 @@
-name: 🚀 Client
+name: 🚀 Client PWA
 on:
-    push:
+    pull_request:
         branches:
-            - master
-
+            - main
+        paths:
+          - client-pwa/**/*
 permissions:
     actions: write
     contents: read
