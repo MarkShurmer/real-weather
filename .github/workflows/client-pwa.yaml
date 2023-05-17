@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - client-pwa/**/*
+      - 'client-pwa/**'
   pull_request: {}
 
 permissions:
