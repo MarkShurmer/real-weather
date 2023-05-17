@@ -8,6 +8,9 @@
     },
     {
       "path": "client-pwa"
+    },
+    {
+      "path": ".husky"
     }
   ],
   "settings": {

@@ -16,6 +16,9 @@ jobs:
     verify:
         name: ⬣ Verify
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: client-pwa
         concurrency:
             group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: true
@@ -29,7 +32,7 @@ jobs:
               with:
                   node-version: 18.5.0
                   cache: 'yarn'
-                  cache-dependency-path: yarn.lock
+                  cache-dependency-path: client-pwa/yarn.lock
 
             - name: Run install
               run: yarn install --frozen-lockfile
@@ -46,8 +49,11 @@ jobs:
     deploy:
         name: ⬣ Deploy
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: client-pwa
         concurrency:
-            group: ${{ github.ref }}
+            group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: true
 
         steps:
@@ -59,7 +65,7 @@ jobs:
               with:
                   node-version: 18.5.0
                   cache: 'yarn'
-                  cache-dependency-path: yarn.lock
+                  cache-dependency-path: client-pwa/yarn.lock
 
             - run: yarn install --frozen-lockfile
             - run: yarn build

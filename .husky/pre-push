@@ -3,5 +3,10 @@
 
 cd server
 yarn lint
+yarn typecheck
 yarn test:ci
 
+cd ../client-pwa
+yarn lint
+yarn typecheck
+yarn test:ci
