@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - server/**/*
+  pull_request: {}
 permissions:
   actions: write
   contents: read
