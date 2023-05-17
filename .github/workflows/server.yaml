@@ -19,7 +19,7 @@ jobs:
       run:
         working-directory: server
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.job }}
+      group: ${{ github.workflow }}-${{ github.ref }}-verify
       cancel-in-progress: true
 
     steps:
@@ -51,7 +51,7 @@ jobs:
     if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
     needs: [verify]
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.job }}
+      group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
