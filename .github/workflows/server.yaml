@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'server/**'
+      - '.github/workflows/server.yaml'
   pull_request: {}
 permissions:
   actions: write
@@ -18,7 +19,7 @@ jobs:
       run:
         working-directory: server
     concurrency:
-      group: ${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
