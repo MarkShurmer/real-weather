@@ -45,6 +45,8 @@ jobs:
 
             - name: Run test
               run: yarn test:ci
+            - name: check
+              run: ls coverage/*.*
             
             # - name: Add coverage to summary
             #   run: cat coverage/index.html >> $GITHUB_STEP_SUMMARY
@@ -52,7 +54,7 @@ jobs:
               uses: autoscatto/action-coverage-summary-markdown@v1.0.6
               id: coverage_summary_markdown
               with:
-                summary_file: '${{ github.action_path }}/coverage/coverage-final.json'
+                summary_file: ./coverage/coverage-final.json
                 warning_threshold: 65
                 good_threshold: 90
                 fail_if: true
