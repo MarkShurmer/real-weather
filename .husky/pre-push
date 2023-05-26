@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd server/lambda/real-weather-server
+cd server
 yarn lint
 yarn typecheck
 yarn test:ci
 
-cd ../../client-pwa
+cd ../client-pwa
 yarn lint
 yarn typecheck
 yarn test:ci
