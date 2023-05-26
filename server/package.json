@@ -1,47 +1,42 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "engines": {
-    "node": "18"
-  },
-  "type": "module",
-  "dependencies": {
-    "@fastify/cors": "^8.2.1",
-    "@fastify/helmet": "^10.1.0",
-    "@jest/globals": "^29.5.0",
-    "fastify": "^4.15.0",
-    "geolib": "^3.3.3",
-    "got": "^12.6.0",
-    "pino-pretty": "^10.0.0",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "@tsconfig/esm": "^1.0.2",
-    "@tsconfig/node18": "^1.0.1",
-    "@types/node": "^18.15.11",
-    "@types/uuid": "^9.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.57.0",
-    "@typescript-eslint/parser": "^5.57.0",
-    "@vitest/coverage-c8": "^0.29.8",
-    "audit-ci": "^6.6.1",
-    "eslint": "^8.37.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-vitest": "^0.0.57",
-    "tsx": "^3.12.6",
-    "typescript": "^5.0.2",
-    "vite": "^4.2.1",
-    "vite-tsconfig-paths": "^4.0.7",
-    "vitest": "^0.29.8"
-  },
-  "scripts": {
-    "test": "API_KEY= vitest",
-    "test:ci": "API_KEY= vitest run --coverage",
-    "audit": "yarn audit-ci -h",
-    "lint": "eslint ./src/**/*.ts",
-    "dev": "NODE_ENV=development tsx watch src | pino-pretty",
-    "start": "tsx src/index.ts",
-    "typecheck": "tsc"
-  }
+    "name": "delete-test-01",
+    "description": "delete-test-01-description",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.188.0",
+        "@aws-sdk/lib-dynamodb": "^3.188.0",
+        "axios": "^1.4.0",
+        "esbuild": "^0.17.19",
+        "geolib": "^3.3.3",
+        "pino": "^8.14.1",
+        "uuid": "^9.0.0",
+        "zod": "^3.21.4"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.115",
+        "@types/jest": "^29.5.1",
+        "@types/node": "^20.2.3",
+        "@types/uuid": "^9.0.1",
+        "@typescript-eslint/eslint-plugin": "^5.59.7",
+        "@typescript-eslint/parser": "^5.59.7",
+        "aws-sdk-client-mock": "^2.0.0",
+        "axios-mock": "^1.0.1",
+        "axios-mock-adapter": "^1.21.4",
+        "eslint": "^8.41.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "jest": "^29.5.0",
+        "prettier": "^2.8.8",
+        "ts-jest": "^29.1.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.4"
+    },
+    "scripts": {
+        "testxxx": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+        "test": "jest --watch",
+        "test:ci": "jest --coverage",
+        "lint": "eslint '*.ts' --quiet --fix",
+        "typecheck": "tsc"
+    }
 }

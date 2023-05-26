@@ -1,7 +1,0 @@
-{
-  "host": "prod-1",
-  "port": 4000,
-  "auth0Domain": "dev-revplanner.uk",
-  "databaseUri": "mongodb://prod-2:27017/rev-planner",
-  "apiKey": ""
-}

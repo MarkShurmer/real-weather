@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+    real-weather-server
+Transform:
+    - AWS::Serverless-2016-10-31
+
+# Resources declares the AWS resources that you want to include in the stack
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+    # This is a Lambda function config associated with the source code: get-all-items.js
+    getWeatherFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: src/weather/get-weather.getWeatherHandler
+            Runtime: nodejs18.x
+            Architectures:
+                - x86_64
+            MemorySize: 128
+            Timeout: 100
+            Description: Gets real weather
+            Environment:
+                Variables:
+                    API_KEY: 5c540b30-099d-4d95-a4d3-ddd3a6b4de48
+                    POSTCODE_INFO_URL: https://api.postcodes.io/postcodes
+                    OBSERVATIONS_SITES_URL: http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/sitelist
+                    OBSERVATIONS_URL: http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/:locationId
+
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /
+                        Method: GET
+        Metadata: # Manage esbuild properties
+            BuildMethod: esbuild
+            BuildProperties:
+                Minify: true
+                Target: es2020
+                Sourcemap: true
+                EntryPoints:
+                    - src/weather/get-weather.ts
+
+    ApplicationResourceGroup:
+        Type: AWS::ResourceGroups::Group
+        Properties:
+            Name:
+                Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+            ResourceQuery:
+                Type: CLOUDFORMATION_STACK_1_0
+    ApplicationInsightsMonitoring:
+        Type: AWS::ApplicationInsights::Application
+        Properties:
+            ResourceGroupName:
+                Ref: ApplicationResourceGroup
+            AutoConfigurationEnabled: true
+Outputs:
+    WebEndpoint:
+        Description: API Gateway endpoint URL for Prod stage
+        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
+# # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Tracing: Active
+    Api:
+        TracingEnabled: true

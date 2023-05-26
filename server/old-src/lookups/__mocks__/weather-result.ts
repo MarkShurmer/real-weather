@@ -1,49 +1,48 @@
-import { getDateNow } from '@common/date-service';
-import { Weather } from '@lookups/types';
+import { Weather } from 'lookups/types';
 
 export const weatherResult: Weather = {
-    date: getDateNow(),
-    elevation: 15.0,
-    latLong: {
-        latitude: 60.749,
-        longitude: -0.854,
+  date: new Date('2023-03-26T16:00:00Z'),
+  elevation: 15.0,
+  latLong: {
+    latitude: 60.749,
+    longitude: -0.854,
+  },
+  locationId: 3002,
+  name: 'Baltasound',
+  report: {
+    dewPoint: {
+      amount: -1.2,
+      units: 'C',
     },
-    locationId: 3002,
-    name: 'Baltasound',
-    report: {
-        dewPoint: {
-            amount: -1.2,
-            units: 'C',
-        },
-        humidity: {
-            amount: 72.6,
-            units: '%',
-        },
-        pressure: {
-            amount: 1014,
-            units: 'hpa',
-        },
-        pressureTendency: 'R',
-        temperature: {
-            amount: 3.2,
-            units: 'C',
-        },
-        visibility: {
-            from: 55,
-            to: 55,
-            units: 'km',
-        },
-        weatherType: 'Overcast',
-        windDirection: 'NNW',
-        windGust: {
-            amount: 32,
-            units: 'mph',
-        },
-        windSpeed: {
-            amount: 21,
-            units: 'mph',
-        },
+    humidity: {
+      amount: 72.6,
+      units: '%',
     },
+    pressure: {
+      amount: 1014,
+      units: 'hpa',
+    },
+    pressureTendency: 'R',
+    temperature: {
+      amount: 3.2,
+      units: 'C',
+    },
+    visibility: {
+      from: 55,
+      to: 55,
+      units: 'km',
+    },
+    weatherType: 'Overcast',
+    windDirection: 'NNW',
+    windGust: {
+      amount: 32,
+      units: 'mph',
+    },
+    windSpeed: {
+      amount: 21,
+      units: 'mph',
+    },
+  },
 };
 
 //     {

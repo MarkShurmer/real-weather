@@ -1,22 +1,28 @@
 {
-  "extends": "@tsconfig/node18/tsconfig",
-  "compilerOptions": {
-    "noEmit": true,
-    "module": "ESNext",
-    "baseUrl": "./",
-    "resolveJsonModule": true,
-    "paths": {
-      "db": ["src/db/index.ts"],
-      "db/*": ["src/db/*"],
-      "common/*": ["src/common/*"],
-      "main/*": ["src/main/*"],
-      "lookups/*": ["src/lookups/*"],
-      "settings/*": ["src/settings/*"],
-      "settings": ["src/settings/index.ts"],
-      "db-migrations/*": ["db-migrations/*"],
-      "@config/*": ["config/*"]
-    }
-  },
-  "include": ["src/**/*.*ts"]
-  // "exclude": ["src/**/*.test.ts"]
+    "compilerOptions": {
+        "target": "es2022",
+        "strict": true,
+        "preserveConstEnums": true,
+        "noEmit": true,
+        "sourceMap": false,
+        "module": "es2022",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": "./",
+        "resolveJsonModule": true,
+        "paths": {
+            "@/*": ["src/*"],
+            "@common/*": ["src/common/*"],
+            "@lookups/*": ["src/lookups/*"],
+            "@weather/*": ["src/weather/*"],
+            "@settings/*": ["src/settings/*"],
+            "@test-utils/*": ["test-utils/*"],
+            "@settings": ["src/settings/index.ts"],
+            "@db-migrations/*": ["db-migrations/*"],
+            "@config/*": ["config/*"]
+        }
+    },
+    "exclude": ["node_modules", "old-src"]
 }
