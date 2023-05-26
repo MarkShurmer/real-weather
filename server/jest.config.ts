@@ -21,5 +21,5 @@ export default {
     testMatch: ['**/*.test.ts'],
     modulePaths: [compilerOptions.baseUrl],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
-    modulePathIgnorePatterns: ['<rootDir>/.aws-sam'],
+    modulePathIgnorePatterns: ['<rootDir>/.aws-sam', '<rootDir>/old-src'],
 } as JestConfigWithTsJest;
