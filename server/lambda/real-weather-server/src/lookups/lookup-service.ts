@@ -1,11 +1,8 @@
-import { Observations_Sites_Url, Observations_Url, Postcode_Info_Url } from 'common/constants';
-
 import {
     GPS,
     LocationWithDistance,
     ObseervableSiteResponse,
     ObservationLocation,
-    PostCodeErrorResponse,
     PostCodeResponse,
     Weather,
     WeatherRangeVector,
@@ -14,19 +11,23 @@ import {
     WeatherUnits,
 } from './types';
 import { getDistance } from 'geolib';
-import { toPascalCase } from 'common/helpers';
+import { toPascalCase } from '@common/helpers';
 import axios from 'axios';
+import { getSettings } from '@settings/settings';
+import { logger } from '@/common/logger';
+
+const settings = getSettings();
 
 export async function convertPostcodeToGps(postcode: string) {
-    const info = await got.get(`${Postcode_Info_Url}/${postcode}`).json<PostCodeResponse | PostCodeErrorResponse>();
+    const response = await axios.get<PostCodeResponse>(`${settings.postCodeInfoUrl}/${postcode}`);
 
-    if (info.status === 404) {
-        throw new Error(info.error);
+    if (response.status === 404) {
+        throw new Error(response.statusText);
     }
 
     return {
-        latitude: info.result.latitude,
-        longitude: info.result.longitude,
+        latitude: response.data.result.latitude,
+        longitude: response.data.result.longitude,
     } as GPS;
 }
 
@@ -62,7 +63,7 @@ export function mapWeatherData(response: WeatherResponse) {
     const units = response.SiteRep.Wx.Param;
 
     const mapped: Weather = {
-        date: dataView.dataDate,
+        date: new Date(dataView.dataDate),
         elevation: dataView.Location.elevation,
         locationId: dataView.Location.i,
         name: toPascalCase(dataView.Location.name),
@@ -103,18 +104,19 @@ export function mapWeatherData(response: WeatherResponse) {
 }
 
 export async function getWeatherFromStation(refPoint: GPS) {
-    const sitesResponse = await axios.get<ObseervableSiteResponse>(`${Observations_Sites_Url}`, {
+    const settings = await getSettings();
+
+    const sitesResponse = await axios.get<ObseervableSiteResponse>(`${settings.observationsSitesUrl}`, {
         params: { key: `${settings.apiKey}` },
     });
 
     // work out nearest
     const nearestSite = getNearestSite(sitesResponse.data.Locations.Location, refPoint);
 
-    // get observations for the site
-    const obs = await axios.get<WeatherResponse>(
-        `${Observations_Url.replace(':locationId', nearestSite.id.toString())}`,
-        { params: { key: settings.apiKey, res: 'hourly' } },
-    );
+    const url = `${settings.observationsUrl.replace(':locationId', nearestSite.id.toString())}`;
+    logger.info(`Getting weather observations using url ${url}`);
+
+    const obs = await axios.get<WeatherResponse>(url, { params: { key: settings.apiKey, res: 'hourly' } });
 
     return mapWeatherData(obs.data);
 }

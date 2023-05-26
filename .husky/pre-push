@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd server
+cd server/lambda
 yarn lint
 yarn typecheck
 yarn test:ci
