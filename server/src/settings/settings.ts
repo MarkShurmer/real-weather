@@ -1,4 +1,4 @@
-import type { AppSettings } from 'src/settings/settings-types';
+import type { AppSettings } from '@settings/settings-types';
 import { logger } from '@common/logger';
 
 export let appSettings: AppSettings;

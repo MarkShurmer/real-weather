@@ -19,7 +19,7 @@ describe('Settings', () => {
     });
 
     it('should get from env vars when diff node env', async () => {
-        process.env.NODE_ENV = 'dev';
+        process.env.NODE_ENV = 'development';
         process.env.API_KEY = 'key2';
         process.env.OBSERVATIONS_SITES_URL = 'sites2';
         process.env.OBSERVATIONS_URL = 'obs2';
