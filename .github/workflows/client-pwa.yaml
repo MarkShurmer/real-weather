@@ -51,8 +51,8 @@ jobs:
               with:
                 name: coverage summary
                 path: |
-                  coverage/*.json
-                  coverage/*.html
+                  **/coverage/coverage*.json
+                  **/coverage/index.html
             
             - name: Coverage Summary Markdown
               uses: autoscatto/action-coverage-summary-markdown@v1.0.6
