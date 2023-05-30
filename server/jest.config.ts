@@ -8,8 +8,6 @@ export default {
         '^.+\\.ts?$': ['ts-jest', {}],
     },
     clearMocks: true,
-    coverageDirectory: 'coverage',
-    coverageProvider: 'v8',
     coverageThreshold: {
         global: {
             branches: 90,

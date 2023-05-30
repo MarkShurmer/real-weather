@@ -33,9 +33,8 @@
         "typescript": "^5.0.4"
     },
     "scripts": {
-        "testxxx": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
         "test": "jest --watch",
-        "test:ci": "jest --coverage",
+        "test:ci": "jest --coverage --coverageReporters='json-summary'",
         "lint": "eslint '*.ts' --quiet --fix",
         "typecheck": "tsc"
     }
