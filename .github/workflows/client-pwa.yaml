@@ -50,8 +50,9 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                 name: coverage summary
-                path: 
-                  coverage/coverage-final.json
+                path: |
+                  coverage/*.json
+                  coverage/*.html
             
             - name: Coverage Summary Markdown
               uses: autoscatto/action-coverage-summary-markdown@v1.0.6
