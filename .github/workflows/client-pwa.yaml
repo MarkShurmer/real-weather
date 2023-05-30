@@ -51,6 +51,7 @@ jobs:
               with:
                 name: coverage summary
                 path: |
+                  client-pwa/coverage/coverage*.json
                   **/coverage/coverage*.json
                   **/coverage/index.html
             
@@ -58,7 +59,7 @@ jobs:
               uses: autoscatto/action-coverage-summary-markdown@v1.0.6
               id: coverage_summary_markdown
               with:
-                summary_file: coverage/coverage-final.json
+                summary_file: '**/coverage/coverage-final.json'
                 warning_threshold: 65
                 good_threshold: 90
                 fail_if: true
