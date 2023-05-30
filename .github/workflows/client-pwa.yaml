@@ -63,14 +63,8 @@ jobs:
                 good_threshold: 90
                 fail_if: true
 
-            - name: Display summary dummy
-              run: echo '### Hello world! 🚀' >> $GITHUB_STEP_SUMMARY
-
             - name: Display summary
               run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
-
-            - name: Display summary 2
-              run: cat client-pwa/coverage/index.html >> $GITHUB_STEP_SUMMARY
 
     deploy:
         name: ⬣ Deploy

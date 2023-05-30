@@ -68,6 +68,25 @@ jobs:
       - name: Run test
         run: yarn test:ci
 
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage summary
+          path: |
+            server/coverage/coverage*.json
+        
+      - name: Coverage Summary Markdown
+        uses: autoscatto/action-coverage-summary-markdown@v1.0.6
+        id: coverage_summary_markdown
+        with:
+          summary_file: 'server/coverage/coverage-summary.json'
+          warning_threshold: 65
+          good_threshold: 90
+          fail_if: true
+
+      - name: Display summary
+        run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
+
   # build:
   #   name: 🐳 Build
   #   # only build/deploy main branch on pushes
