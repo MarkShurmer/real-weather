@@ -45,8 +45,13 @@ jobs:
 
             - name: Run test
               run: yarn test:ci
-            - name: check
-              run: ls coverage/*.*
+
+            - name: Archive test artifacts
+              uses: actions/upload-artifact@v3
+              with:
+                name: coverage summary
+                path: 
+                  coverage/coverage-final.json
             
             - name: Coverage Summary Markdown
               uses: autoscatto/action-coverage-summary-markdown@v1.0.6
