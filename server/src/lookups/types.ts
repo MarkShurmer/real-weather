@@ -139,6 +139,7 @@ export const WeatherUnits = {
     temperature: 'C',
     direction: 'compass',
     pressure: 'hpa',
+    humidity: '%',
 };
 
 export type WeatherVector = {

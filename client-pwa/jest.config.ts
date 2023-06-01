@@ -5,9 +5,6 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 const jestConfig: JestConfigWithTsJest = {
     preset: 'ts-jest',
     clearMocks: true,
-    coverageDirectory: 'coverage',
-    coverageProvider: 'v8',
-    coverageReporters: ['json', 'html'],
     collectCoverageFrom: [
         './src/**/*.{js,jsx}',
         './src/**/*.{ts,tsx}',
@@ -15,6 +12,7 @@ const jestConfig: JestConfigWithTsJest = {
         '!**/node_modules/**',
         '!**/test-utils/**',
         '!**/index.{ts,tsx}',
+        '!./src/api/api-contracts.ts',
     ],
     testEnvironment: 'jsdom',
     transform: {

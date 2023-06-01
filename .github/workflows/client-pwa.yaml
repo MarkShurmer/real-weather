@@ -45,20 +45,31 @@ jobs:
 
             - name: Run test
               run: yarn test:ci
+
+            - name: Archive test artifacts
+              uses: actions/upload-artifact@v3
+              with:
+                name: coverage summary
+                path: |
+                  client-pwa/coverage/coverage*.json
+                  client-pwa/coverage/index.html
             
-            # - name: Add coverage to summary
-            #   run: cat coverage/index.html >> $GITHUB_STEP_SUMMARY
             - name: Coverage Summary Markdown
-              uses: autoscatto/action-coverage-summary-markdown@v1
+              uses: autoscatto/action-coverage-summary-markdown@v1.0.6
               id: coverage_summary_markdown
               with:
-                summary_file: 'coverage/coverage-final.json'
+                summary_file: 'client-pwa/coverage/coverage-summary.json'
                 warning_threshold: 65
                 good_threshold: 90
                 fail_if: true
 
+            - name: Display summary
+              run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
+
     deploy:
         name: ⬣ Deploy
+        if: github.ref == 'refs/heads/main'
+        needs: verify
         runs-on: ubuntu-latest
         defaults:
           run:

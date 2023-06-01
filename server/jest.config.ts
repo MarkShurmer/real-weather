@@ -8,8 +8,15 @@ export default {
         '^.+\\.ts?$': ['ts-jest', {}],
     },
     clearMocks: true,
-    coverageDirectory: 'coverage',
-    coverageProvider: 'v8',
+    collectCoverageFrom: [
+        './src/**/*.{js,jsx}',
+        './src/**/*.{ts,tsx}',
+        '!**/*.d.ts',
+        '!**/node_modules/**',
+        '!**/test-utils/**',
+        '!**/index.{ts,tsx}',
+        '!**/*-types.ts',
+    ],
     coverageThreshold: {
         global: {
             branches: 90,

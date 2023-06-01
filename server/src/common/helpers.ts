@@ -4,5 +4,7 @@ export function toPascalCase(s: string) {
     });
 }
 
-export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
-    Object.assign({}, state, changes);
+// export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
+//     Object.assign({}, state, changes);
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

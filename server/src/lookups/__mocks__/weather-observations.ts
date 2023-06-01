@@ -566,3 +566,45 @@ export const weatherObsExcellentVisibility: WeatherResponse = {
         },
     },
 };
+
+export const weatherObsNoParam: WeatherResponse = {
+    SiteRep: {
+        Wx: {
+            Param: [],
+        },
+        DV: {
+            dataDate: getDateNow(),
+            type: 'Obs',
+            Location: {
+                i: 3002,
+                lat: 60.749,
+                lon: -0.854,
+                name: 'Baltasound',
+                country: 'SCOTLAND',
+                continent: 'EUROPE',
+                elevation: 15.0,
+                Period: [
+                    {
+                        type: 'Day',
+                        value: getDateNow(),
+                        Rep: [
+                            {
+                                D: 'NNW',
+                                G: 32,
+                                H: 72.6,
+                                P: 1014,
+                                S: 21,
+                                T: 3.2,
+                                V: 'EX',
+                                W: 8,
+                                Pt: 'R',
+                                Dp: -1.2,
+                                $: 960,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    },
+};

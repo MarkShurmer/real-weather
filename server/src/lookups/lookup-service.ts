@@ -9,21 +9,20 @@ import {
     WeatherResponse,
     WeatherType,
     WeatherUnits,
-} from './types';
+} from '@lookups/types';
 import { getDistance } from 'geolib';
 import { toPascalCase } from '@common/helpers';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getSettings } from '@settings/settings';
-import { logger } from '@/common/logger';
+import { logger } from '@common/logger';
 
 const settings = getSettings();
 
 export async function convertPostcodeToGps(postcode: string) {
-    const response = await axios.get<PostCodeResponse>(`${settings.postCodeInfoUrl}/${postcode}`);
+    const url = `${settings.postCodeInfoUrl}/${postcode}`;
+    logger.info(`convertPostcodeToGps: getting location from post code lookup url ${url}`);
 
-    if (response.status === 404) {
-        throw new Error(response.statusText);
-    }
+    const response = await axios.get<PostCodeResponse>(url);
 
     return {
         latitude: response.data.result.latitude,
@@ -74,20 +73,20 @@ export function mapWeatherData(response: WeatherResponse) {
         report: {
             dewPoint: {
                 amount: report.Dp,
-                units: units.find((u) => u.name === 'Dp')?.units ?? '',
+                units: units.find((u) => u.name === 'Dp')?.units ?? WeatherUnits.temperature,
             },
             humidity: {
                 amount: report.H,
-                units: units.find((u) => u.name === 'H')?.units ?? '',
+                units: units.find((u) => u.name === 'H')?.units ?? WeatherUnits.humidity,
             },
             pressure: {
                 amount: report.P,
-                units: units.find((u) => u.name === 'P')?.units ?? '',
+                units: units.find((u) => u.name === 'P')?.units ?? WeatherUnits.pressure,
             },
             pressureTendency: report.Pt,
             temperature: {
                 amount: report.T,
-                units: units.find((u) => u.name === 'T')?.units ?? '',
+                units: units.find((u) => u.name === 'T')?.units ?? WeatherUnits.temperature,
             },
             visibility: translateVisibility(report.V),
             weatherType: WeatherType[report.W],
@@ -104,21 +103,30 @@ export function mapWeatherData(response: WeatherResponse) {
 }
 
 export async function getWeatherFromStation(refPoint: GPS) {
-    const settings = await getSettings();
-
-    const sitesResponse = await axios.get<ObseervableSiteResponse>(`${settings.observationsSitesUrl}`, {
-        params: { key: `${settings.apiKey}` },
+    const sitesResponse = await axios.get<ObseervableSiteResponse>(settings.observationsSitesUrl, {
+        params: { key: settings.apiKey },
     });
 
     // work out nearest
     const nearestSite = getNearestSite(sitesResponse.data.Locations.Location, refPoint);
+    logger.info(`Found site ${nearestSite.name} id ${nearestSite.id}`);
 
     const url = `${settings.observationsUrl.replace(':locationId', nearestSite.id.toString())}`;
     logger.info(`Getting weather observations using url ${url}`);
 
-    const obs = await axios.get<WeatherResponse>(url, { params: { key: settings.apiKey, res: 'hourly' } });
+    try {
+        const obsResponse = await axios.get<WeatherResponse>(url, { params: { key: settings.apiKey, res: 'hourly' } });
 
-    return mapWeatherData(obs.data);
+        return mapWeatherData(obsResponse.data);
+    } catch (err) {
+        const axiosError = err as AxiosError<WeatherResponse>;
+
+        if (axiosError.response?.status === 404) {
+            throw new Error(`Unable to get observers for site ${nearestSite.id.toString()} as site not found`);
+        } else {
+            throw err;
+        }
+    }
 }
 
 function getNearestSite(sites: ObservationLocation[], refPoint: GPS) {
