@@ -3,7 +3,7 @@ import { AppSettings } from './settings-types';
 jest.mock('@common/logger');
 
 describe('Settings', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.resetModules();
     });
 
@@ -27,7 +27,7 @@ describe('Settings', () => {
 
         const settingsMod = await import('@settings');
 
-        expect(await settingsMod.getSettings()).toEqual({
+        expect(settingsMod.getSettings()).toEqual({
             apiKey: 'key2',
             observationsSitesUrl: 'sites2',
             observationsUrl: 'obs2',

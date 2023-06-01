@@ -8,38 +8,41 @@ import { getSettings } from '@settings/settings';
 import { weatherSites } from '@lookups/__mocks__/weather-sites';
 import { weatherObservation, weatherResult } from '@lookups/__mocks__';
 import { Weather } from '@/lookups/types';
+import { getDistance } from 'geolib';
 
 jest.mock('@common/date-service', () => ({
     getDateNow: jest.fn().mockReturnValue(new Date('25-may-2023 11:00:00')),
 }));
 jest.mock('@common/logger');
-
-const axiosMock = new MockAdapter(axios, { onNoMatch: 'throwException' });
-const settings = getSettings();
-const url = new RegExp(`${settings.postCodeInfoUrl}/*`);
+jest.mock('geolib');
 
 describe('Get weather', () => {
+    const axiosMock = new MockAdapter(axios, { onNoMatch: 'throwException' });
+    const settings = getSettings();
+    const postCodeUrl = new RegExp(`${settings.postCodeInfoUrl}/*`);
+
     beforeAll(() => {
         axiosMock.onGet(settings.observationsSitesUrl).reply(200, weatherSites);
         axiosMock.onGet(settings.observationsUrl).reply(200, weatherObservation);
+        (getDistance as jest.Mock).mockReturnValueOnce(10).mockReturnValueOnce(50).mockReturnValueOnce(100);
     });
 
     it('should give error with post', async () => {
-        axiosMock.onGet(url).reply(200, { result: { longitude: 20, latitude: 30 } });
-        await expect(
-            async () => await getWeatherHandler(partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'POST' })),
-        ).rejects.toThrowError('getWeatherHandler only accepts GET method, you tried: POST');
+        axiosMock.onGet(postCodeUrl).reply(200, { result: { longitude: 20, latitude: 30 } });
+        await expect(async () => {
+            await getWeatherHandler(partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'POST' }));
+        }).rejects.toThrowError('getWeatherHandler only accepts GET method, you tried: POST');
     });
 
     it('should give error when postcode not specified', async () => {
-        axiosMock.onGet(url).reply(200, { result: { longitude: 20, latitude: 30 } });
-        await expect(
-            async () => await getWeatherHandler(partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'GET' })),
-        ).rejects.toThrowError('postcode needs to be supplied as a parameter');
+        axiosMock.onGet(postCodeUrl).reply(200, { result: { longitude: 20, latitude: 30 } });
+        await expect(async () => {
+            await getWeatherHandler(partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'GET' }));
+        }).rejects.toThrowError('postcode needs to be supplied as a parameter');
     });
 
     it('should give error when postcode lookup fails', async () => {
-        axiosMock.onGet(url).reply(500, 'Server failure');
+        axiosMock.onGet(postCodeUrl).reply(500, 'Server failure');
         const result = await getWeatherHandler(
             partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'GET', queryStringParameters: { postcode: 'SW11ED' } }),
         );
@@ -49,7 +52,7 @@ describe('Get weather', () => {
     });
 
     it('should give result', async () => {
-        axiosMock.onGet(url).reply(200, { result: { longitude: 20, latitude: 30 } });
+        axiosMock.onGet(postCodeUrl).reply(200, { result: { longitude: 20, latitude: 30 } });
         const result = await getWeatherHandler(
             partiallyMock<APIGatewayProxyEvent>({ httpMethod: 'GET', queryStringParameters: { postcode: 'SW11ED' } }),
         );
