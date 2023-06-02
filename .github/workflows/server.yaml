@@ -27,7 +27,7 @@ env:
     PROD_STACK_NAME: real-weather
     PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
     PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    PROD_ARTIFACTS_BUCKET: user/Mark
+    PROD_ARTIFACTS_BUCKET: real-weather
     # If there are functions with "Image" PackageType in your template,
     # uncomment the line below and add "--image-repository ${PROD_IMAGE_REPOSITORY}" to
     # prod "sam package" and "sam deploy" commands.
@@ -169,9 +169,14 @@ jobs:
           - name: Upload artifacts to production artifact buckets
             run: |
                 sam package \
-                  --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
                   --region ${PROD_REGION} \
                   --output-template-file packaged-prod.yaml
+
+          - name: Upload generated artifacts
+            uses: actions/upload-artifact@v3
+            with:
+                name: packaged template
+                path: server/packaged-prod.yaml
 
           - uses: actions/upload-artifact@v3
             with:
@@ -194,16 +199,16 @@ jobs:
             with:
                 name: packaged-prod.yaml
 
-          - name: Assume the prod pipeline user role
-            uses: aws-actions/configure-aws-credentials@v1-node16
-            with:
-                aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY}}
-                aws-region: ${{ env.PROD_REGION }}
-                role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
-                role-session-name: prod-deployment
-                role-duration-seconds: 3600
-                role-skip-session-tagging: true
+          # - name: Assume the prod pipeline user role
+          #   uses: aws-actions/configure-aws-credentials@v1-node16
+          #   with:
+          #       aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          #       aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY}}
+          #       aws-region: ${{ env.PROD_REGION }}
+          #       role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
+          #       role-session-name: prod-deployment
+          #       role-duration-seconds: 3600
+          #       role-skip-session-tagging: true
 
           - name: Deploy to production account
             run: |
