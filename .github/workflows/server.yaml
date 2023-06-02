@@ -24,7 +24,7 @@ env:
     # testing "sam package" and "sam deploy" commands.
     # TESTING_IMAGE_REPOSITORY = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     # TESTING_REGION: eu-west-2
-    PROD_STACK_NAME: real-weather
+    PROD_STACK_NAME: real-weather-server
     PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
     PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
     PROD_ARTIFACTS_BUCKET: real-weather
