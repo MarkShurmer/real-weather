@@ -11,6 +11,9 @@
     },
     {
       "path": ".husky"
+    },
+    {
+      "path": "back-end"
     }
   ],
   "settings": {
