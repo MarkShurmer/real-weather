@@ -1,9 +1,6 @@
 {
   "folders": [
     {
-      "path": "server"
-    },
-    {
       "path": ".github"
     },
     {
@@ -14,6 +11,9 @@
     },
     {
       "path": "back-end"
+    },
+    {
+      "path": "server-lambda"
     }
   ],
   "settings": {
