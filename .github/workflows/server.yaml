@@ -12,27 +12,18 @@ permissions:
   contents: read
 
 env:
-    PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    # PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    # PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    # PROD_STACK_NAME: real-weather-server
+    # PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
+    # PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
+    # PROD_ARTIFACTS_BUCKET: real-weather
+    # PROD_REGION: eu-west-2
+
     SAM_TEMPLATE: template.yaml
-    # TESTING_STACK_NAME: sam-app
-    # TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    # TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    # TESTING_ARTIFACTS_BUCKET: user/Mark
-    # If there are functions with "Image" PackageType in your template,
-    # uncomment the line below and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
-    # testing "sam package" and "sam deploy" commands.
-    # TESTING_IMAGE_REPOSITORY = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
-    # TESTING_REGION: eu-west-2
-    PROD_STACK_NAME: real-weather-server
-    PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    PROD_ARTIFACTS_BUCKET: real-weather
-    # If there are functions with "Image" PackageType in your template,
-    # uncomment the line below and add "--image-repository ${PROD_IMAGE_REPOSITORY}" to
-    # prod "sam package" and "sam deploy" commands.
-    # PROD_IMAGE_REPOSITORY = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
-    PROD_REGION: eu-west-2
+    IONOS_USERID:  ${{ secrets.IONOS_USERID }}
+    IONOS_PW: ${{ secrets.IONOS_PASSWORD }}
+    IONOS_URL: ${{ IONOS_URL }}
 
 jobs:
   verify:
@@ -87,133 +78,111 @@ jobs:
       - name: Display summary
         run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
 
-  # build:
-  #   name: 🐳 Build
-  #   # only build/deploy main branch on pushes
-  #   if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
-  #   needs: [verify]
-  #   defaults:
-  #     run:
-  #       working-directory: server
-  #   concurrency:
-  #     group: ${{ github.workflow }}-${{ github.ref }}-build
-  #     cancel-in-progress: true
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: ⬇️ Checkout repo
-  #       uses: actions/checkout@v3
+  deploy:
+    name: 🐳 Deploy
+    # only build/deploy main branch on pushes
+    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
+    needs: [verify]
+    defaults:
+      run:
+        working-directory: server
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
 
-  #     - name: ⎔ Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18.5.0
-  #         cache: 'yarn'
-  #         cache-dependency-path: server/yarn.lock
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.5.0
+          cache: 'yarn'
+          cache-dependency-path: server/yarn.lock
 
-  #     - name: Install dependencies
-  #       run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-  #     - name: Do the build
-  #       run: sam build
+      # - name: Build docker image
+      #   run: yarn build:docker
+      # - name: Deploy docker image to repo
+      #   run: ssh docker images
+      # - name: Deploy docker image to ionos
+      #   run: ssh ${IONOS_USERID}@${IONOS_URL} 
+      - name: Deploy to remote
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${IONOS_URL} 
+          username: ${IONOS_USERID}
+          password: ${PASSWORD}
+          port: ${{ secrets.PORT }}
+          script: whoami
 
-  build-and-package:
-      if: github.ref == 'refs/heads/main'
-      needs: [verify]
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: server
-      steps:
-          - uses: actions/checkout@v3
-          - uses: aws-actions/setup-sam@v2
-            with:
-                use-installer: true
+  # build-and-package:
+  #     if: github.ref == 'refs/heads/main'
+  #     needs: [verify]
+  #     runs-on: ubuntu-latest
+  #     defaults:
+  #       run:
+  #         working-directory: server
+  #     steps:
+  #         - uses: actions/checkout@v3
+  #         - uses: aws-actions/setup-sam@v2
+  #           with:
+  #               use-installer: true
 
-          - name: Build resources
-            run: sam build --template ${SAM_TEMPLATE} --use-container
+  #         - name: Build resources
+  #           run: sam build --template ${SAM_TEMPLATE} --use-container
 
-          # - name: Assume the testing pipeline user role
-          #   uses: aws-actions/configure-aws-credentials@v1-node16
-          #   with:
-          #       aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
-          #       aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
-          #       aws-region: ${{ env.TESTING_REGION }}
-          #       role-to-assume: ${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}
-          #       role-session-name: testing-packaging
-          #       role-duration-seconds: 3600
-          #       role-skip-session-tagging: true
+  #         - name: Upload artifacts to production artifact buckets
+  #           run: |
+  #               sam package \
+  #                 --region ${PROD_REGION} \
+  #                 --output-template-file packaged-prod.yaml
 
-          # - name: Upload artifacts to testing artifact buckets
-          #   run: |
-          #       sam package \
-          #         --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
-          #         --region ${TESTING_REGION} \
-          #         --output-template-file packaged-testing.yaml
+  #         - name: Upload generated artifacts
+  #           uses: actions/upload-artifact@v3
+  #           with:
+  #               name: packaged template
+  #               path: server/packaged-prod.yaml
 
-          # - uses: actions/upload-artifact@v3
-          #   with:
-          #       name: packaged-testing.yaml
-          #       path: server/packaged-testing.yaml
+  #         - uses: actions/upload-artifact@v3
+  #           with:
+  #               name: packaged-prod.yaml
+  #               path: packaged-prod.yaml
 
-          # - name: Assume the prod pipeline user role
-          #   uses: aws-actions/configure-aws-credentials@v1-node16
-          #   with:
-          #       aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
-          #       aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
-          #       aws-region: ${{ env.PROD_REGION }}
-          #       role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
-          #       role-session-name: prod-packaging
-          #       role-duration-seconds: 3600
-          #       role-skip-session-tagging: true
+  # deploy-prod:
+  #     if: github.ref == 'refs/heads/main'
+  #     needs: [verify, build-and-package]
+  #     runs-on: ubuntu-latest
+  #     # Configure GitHub Action Environment to have a manual approval step before deployment to production
+  #     # https://docs.github.com/en/actions/reference/environments
+  #     # environment: <configured-environment>
+  #     steps:
+  #         - uses: actions/checkout@v3
+  #         - uses: aws-actions/setup-sam@v2
+  #           with:
+  #               use-installer: true
+  #         - uses: actions/download-artifact@v3
+  #           with:
+  #               name: packaged-prod.yaml
 
-          - name: Upload artifacts to production artifact buckets
-            run: |
-                sam package \
-                  --region ${PROD_REGION} \
-                  --output-template-file packaged-prod.yaml
+  #         # - name: Assume the prod pipeline user role
+  #         #   uses: aws-actions/configure-aws-credentials@v1-node16
+  #         #   with:
+  #         #       aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+  #         #       aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY}}
+  #         #       aws-region: ${{ env.PROD_REGION }}
+  #         #       role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
+  #         #       role-session-name: prod-deployment
+  #         #       role-duration-seconds: 3600
+  #         #       role-skip-session-tagging: true
 
-          - name: Upload generated artifacts
-            uses: actions/upload-artifact@v3
-            with:
-                name: packaged template
-                path: server/packaged-prod.yaml
-
-          - uses: actions/upload-artifact@v3
-            with:
-                name: packaged-prod.yaml
-                path: packaged-prod.yaml
-
-  deploy-prod:
-      if: github.ref == 'refs/heads/main'
-      needs: [verify, build-and-package]
-      runs-on: ubuntu-latest
-      # Configure GitHub Action Environment to have a manual approval step before deployment to production
-      # https://docs.github.com/en/actions/reference/environments
-      # environment: <configured-environment>
-      steps:
-          - uses: actions/checkout@v3
-          - uses: aws-actions/setup-sam@v2
-            with:
-                use-installer: true
-          - uses: actions/download-artifact@v3
-            with:
-                name: packaged-prod.yaml
-
-          # - name: Assume the prod pipeline user role
-          #   uses: aws-actions/configure-aws-credentials@v1-node16
-          #   with:
-          #       aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
-          #       aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY}}
-          #       aws-region: ${{ env.PROD_REGION }}
-          #       role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
-          #       role-session-name: prod-deployment
-          #       role-duration-seconds: 3600
-          #       role-skip-session-tagging: true
-
-          - name: Deploy to production account
-            run: |
-                sam deploy --stack-name ${PROD_STACK_NAME} \
-                  --template packaged-prod.yaml \
-                  --capabilities CAPABILITY_IAM \
-                  --region ${PROD_REGION} \
-                  --no-fail-on-empty-changeset 
+  #         - name: Deploy to production account
+  #           run: |
+  #               sam deploy --stack-name ${PROD_STACK_NAME} \
+  #                 --template packaged-prod.yaml \
+  #                 --capabilities CAPABILITY_IAM \
+  #                 --region ${PROD_REGION} \
+  #                 --no-fail-on-empty-changeset 
