@@ -23,7 +23,7 @@ env:
     SAM_TEMPLATE: template.yaml
     IONOS_USERID:  ${{ secrets.IONOS_USERID }}
     IONOS_PW: ${{ secrets.IONOS_PASSWORD }}
-    IONOS_URL: ${{ IONOS_URL }}
+    IONOS_URL: ${{ secrets.IONOS_URL }}
 
 jobs:
   verify:
