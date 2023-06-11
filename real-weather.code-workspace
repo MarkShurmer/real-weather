@@ -1,9 +1,6 @@
 {
   "folders": [
     {
-      "path": "server"
-    },
-    {
       "path": ".github"
     },
     {
@@ -11,6 +8,12 @@
     },
     {
       "path": ".husky"
+    },
+    {
+      "path": "back-end"
+    },
+    {
+      "path": "server-lambda"
     }
   ],
   "settings": {

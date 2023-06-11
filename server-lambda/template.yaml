@@ -18,6 +18,12 @@ Resources:
             MemorySize: 128
             Timeout: 100
             Description: Gets real weather
+            FunctionUrlConfig:
+                AuthType: NONE
+                Cors:
+                    AllowOrigin: "'*'"
+                    AllowMethods: "'*'"
+                    AllowHeaders: "'*'"
             Environment:
                 Variables:
                     API_KEY: 5c540b30-099d-4d95-a4d3-ddd3a6b4de48

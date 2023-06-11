@@ -1,4 +1,4 @@
-import { WEATHER_API } from '@api/api-constants';
+import { getApiUrl } from '@/api/api';
 import { Weather } from '@api/api-contracts';
 import { atom, selector } from 'recoil';
 
@@ -10,10 +10,12 @@ export const postCodeAtom = atom<string>({
 export const weatherState = selector<Weather | null>({
     key: 'weather',
     get: async ({ get }) => {
-        const postCode = get(postCodeAtom);
+        const postcode = get(postCodeAtom);
 
-        if (postCode.length >= 6) {
-            const url = WEATHER_API.replace('${postCode}', postCode);
+        if (postcode.length >= 6) {
+            const url = new URL(getApiUrl());
+            url.search = new URLSearchParams({ postcode }).toString();
+
             const response = await fetch(url);
 
             if (response.ok) {

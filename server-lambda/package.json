@@ -35,6 +35,7 @@
         "test": "jest --watch",
         "test:ci": "jest --coverage --coverageReporters='json-summary'",
         "lint": "eslint '*.ts' --quiet --fix",
-        "typecheck": "tsc"
+        "typecheck": "tsc",
+        "dev": "sam local start-api -p 4000"
     }
 }
