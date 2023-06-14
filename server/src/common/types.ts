@@ -1,4 +1,4 @@
-import { Guid } from 'common/guid';
+import { Guid } from '@common/guid';
 
 export interface LooseObject {
     [key: string]: unknown;

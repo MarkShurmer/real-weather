@@ -1,11 +1,16 @@
-import { app } from './app';
+import { app, startApp } from './app';
 import { getSettings } from './settings';
 
-const settings = await getSettings();
+const settings = getSettings();
 
-try {
-    await app.listen({ port: settings.port });
-} catch (err) {
-    app.log.error(err);
-    process.exit(1);
+async function startServer() {
+    try {
+        startApp();
+        await app.listen({ port: settings.port });
+    } catch (err) {
+        app.log.error(err);
+        process.exit(1);
+    }
 }
+
+startServer();

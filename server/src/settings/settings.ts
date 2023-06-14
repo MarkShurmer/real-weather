@@ -5,15 +5,15 @@ import prodSettings from '@config/production.json';
 
 let appSettings: AppSettings;
 
-export async function getSettings() {
+export function getSettings() {
     if (!appSettings) {
-        await loadSettings();
+        loadSettings();
     }
 
     return appSettings;
 }
 
-export async function loadSettings() {
+export function loadSettings() {
     appSettings = (isProd() ? prodSettings : defaultSettings) as AppSettings;
 
     // manual update

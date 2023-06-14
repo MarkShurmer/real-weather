@@ -5,16 +5,20 @@ import { lookupRoutes } from './lookups/lookup-routes';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 
-const app: FastifyInstance = await Fastify({
-    logger: true,
-});
+let app: FastifyInstance;
 
-// add our middlewares
-await app.register(cors, { origin: ['http://localhost:5173'] });
-await app.register(helmet);
+async function startApp() {
+    app = await Fastify({
+        logger: true,
+    });
 
-// now add our routes
-await app.register(mainRoutes);
-await app.register(lookupRoutes);
+    // add our middlewares
+    await app.register(cors, { origin: ['http://localhost:5173'] });
+    await app.register(helmet);
 
-export { app };
+    // now add our routes
+    await app.register(mainRoutes);
+    await app.register(lookupRoutes);
+}
+
+export { app, startApp };
