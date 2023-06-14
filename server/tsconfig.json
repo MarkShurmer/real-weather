@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "CommonJS",
+        "noEmit": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "checkJs": true,
+        "baseUrl": "./",
+        "paths": {
+            "@root/*": ["src/*"],
+            "@main/*": ["src/main/*"],
+            "@common/*": ["src/common/*"],
+            "@settings": ["src/settings/index"],
+            "@settings/*": ["src/settings/*"],
+            "@lookups/*": ["src/lookups/*"],
+            "@config/*": ["config/*"]
+        }
+    },
+    "exclude": ["node_modules"]
+}

@@ -10,17 +10,24 @@
       "path": ".husky"
     },
     {
-      "path": "back-end"
+      "path": "server-lambda"
     },
     {
-      "path": "server-lambda"
+      "path": "server"
     }
   ],
   "settings": {
     "jest.disabledWorkspaceFolders": [
       "docs",
       ".github",
-      ".husky"
-    ]
+      ".husky",
+      "server-lambda",
+      "back-end"
+    ],
+    "js/ts.implicitProjectConfig.checkJs": true,
+    "jest.showCoverageOnLoad": true,
+    "jest.jestCommandLine": "yarn test",
+    "typescript.suggestionActions.enabled": true,
+    "javascript.suggestionActions.enabled": true
   }
 }

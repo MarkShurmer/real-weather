@@ -6,8 +6,8 @@ import { vi, describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { readFile } from 'fs/promises';
 import { PathLike } from 'node:fs';
 
-vi.mock('common/logger');
-vi.mock('fs/promises');
+jest.mock('common/logger');
+jest.mock('fs/promises');
 
 describe('Settings', () => {
   describe('isDev', () => {
@@ -83,7 +83,7 @@ describe('Settings', () => {
   describe('App settings', () => {
     const mockedReadFile =
       // eslint-disable-next-line no-unused-vars
-      vi.mocked<(path: PathLike, enc: BufferEncoding) => Promise<string>>(
+      jest.mocked<(path: PathLike, enc: BufferEncoding) => Promise<string>>(
         readFile
       );
 

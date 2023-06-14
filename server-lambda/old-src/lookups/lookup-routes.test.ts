@@ -17,18 +17,18 @@ import { partiallyMock } from 'common/helpers';
 import { GPS, Weather, WeatherRequest } from 'lookups/types';
 import { FastifyInstance, FastifyReply } from 'fastify';
 
-vi.mock('lookups/lookup-service');
+jest.mock('lookups/lookup-service');
 
 describe('Lookup routes', () => {
   let mockedConvert: MockedFunction<(postcode: string) => Promise<GPS>>;
   let mockedWeather: MockedFunction<typeof getWeatherFromStation>;
-  const mockErrorLog = vi.fn();
-  const mockStatus = vi.fn();
+  const mockErrorLog = jest.fn();
+  const mockStatus = jest.fn();
   const mockLog = { error: mockErrorLog };
 
   beforeAll(() => {
-    mockedConvert = vi.mocked(convertPostcodeToGps);
-    mockedWeather = vi.mocked(getWeatherFromStation);
+    mockedConvert = jest.mocked(convertPostcodeToGps);
+    mockedWeather = jest.mocked(getWeatherFromStation);
     vi.useFakeTimers().setSystemTime('2023-04-04');
   });
 
@@ -37,7 +37,7 @@ describe('Lookup routes', () => {
   });
 
   it('should register weather handler', async () => {
-    const mockGet = vi.fn();
+    const mockGet = jest.fn();
 
     await lookupRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
 

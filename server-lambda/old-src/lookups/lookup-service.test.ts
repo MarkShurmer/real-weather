@@ -21,10 +21,10 @@ import {
 import { Observations_Sites_Url, Observations_Url } from 'common/constants';
 import { weatherResult } from './__mocks__/weather-result';
 
-vi.mock('got');
+jest.mock('got');
 
-const mockedGot = vi.mocked(got.get);
-const mockResponse = vi.fn();
+const mockedGot = jest.mocked(got.get);
+const mockResponse = jest.fn();
 
 beforeAll(() => {
   mockedGot.mockReturnValue(
@@ -53,8 +53,8 @@ test('convertPostcodeToGps - should give error for not real postcode', async () 
 });
 
 test('getWeatherFromStation - should get obs for nearest site to edinburgh', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
-  const mockedObservations = vi.fn().mockResolvedValue(weatherObservation);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = jest.fn().mockResolvedValue(weatherObservation);
   mockedGot.mockReturnValueOnce(
     partiallyMock<CancelableRequest>({ json: mockedSites })
   );
@@ -83,8 +83,8 @@ test('getWeatherFromStation - should get obs for nearest site to edinburgh', asy
 });
 
 test('getWeatherFromStation - should get obs for nearest site to surbiton', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
-  const mockedObservations = vi.fn().mockResolvedValue(weatherObservation);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
+  const mockedObservations = jest.fn().mockResolvedValue(weatherObservation);
   mockedGot.mockReturnValueOnce(
     partiallyMock<CancelableRequest>({ json: mockedSites })
   );
@@ -112,7 +112,7 @@ test('getWeatherFromStation - should get obs for nearest site to surbiton', asyn
 });
 
 test('getWeatherFromStation - should get obs for unknown visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsUnknownVisibility);
@@ -135,7 +135,7 @@ test('getWeatherFromStation - should get obs for unknown visibility', async () =
 });
 
 test('getWeatherFromStation - should get obs for very poor visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsVeryPoorVisibility);
@@ -158,7 +158,7 @@ test('getWeatherFromStation - should get obs for very poor visibility', async ()
 });
 
 test('getWeatherFromStation - should get obs for poor visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsPoorVisibility);
@@ -181,7 +181,7 @@ test('getWeatherFromStation - should get obs for poor visibility', async () => {
 });
 
 test('getWeatherFromStation - should get obs for moderate visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsModerateVisibility);
@@ -204,7 +204,7 @@ test('getWeatherFromStation - should get obs for moderate visibility', async () 
 });
 
 test('getWeatherFromStation - should get obs for good visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsGoodVisibility);
@@ -227,7 +227,7 @@ test('getWeatherFromStation - should get obs for good visibility', async () => {
 });
 
 test('getWeatherFromStation - should get obs for very good visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsVeryGoodVisibility);
@@ -250,7 +250,7 @@ test('getWeatherFromStation - should get obs for very good visibility', async ()
 });
 
 test('getWeatherFromStation - should get obs for excellent visibility', async () => {
-  const mockedSites = vi.fn().mockResolvedValue(weatherSites);
+  const mockedSites = jest.fn().mockResolvedValue(weatherSites);
   const mockedObservations = vi
     .fn()
     .mockResolvedValue(weatherObsExcellentVisibility);
@@ -272,9 +272,9 @@ test('getWeatherFromStation - should get obs for excellent visibility', async ()
   expect(result).toEqual(expectedResult);
 });
 
-test('getWeatherFromStation - should error when api call fails', async () => {
-  const mockedSites = vi.fn().mockRejectedValue('Failed');
-  // const mockedObservations = vi.fn().mockResolvedValue(weatherObservation);
+test('should error when api call fails', async () => {
+  const mockedSites = jest.fn().mockRejectedValue('Failed');
+  // const mockedObservations = jest.fn().mockResolvedValue(weatherObservation);
   mockedGot.mockReturnValueOnce(
     partiallyMock<CancelableRequest>({ json: mockedSites })
   );

@@ -6,7 +6,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 describe('Main routes', () => {
   it('should register root routes', async () => {
-    const mockGet = vi.fn();
+    const mockGet = jest.fn();
 
     await mainRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
 
@@ -15,7 +15,7 @@ describe('Main routes', () => {
   });
 
   it('should get message from root', async () => {
-    const mockGet = vi.fn();
+    const mockGet = jest.fn();
 
     await mainRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
     const getFunction = mockGet.mock.calls[0][1];
@@ -23,7 +23,7 @@ describe('Main routes', () => {
   });
 
   it('should get message from health', async () => {
-    const mockGet = vi.fn();
+    const mockGet = jest.fn();
 
     await mainRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
     const getFunction = mockGet.mock.calls[1][1];
