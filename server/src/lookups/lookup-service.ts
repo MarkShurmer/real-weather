@@ -4,6 +4,7 @@ import {
     LocationWithDistance,
     ObseervableSiteResponse,
     ObservationLocation,
+    PostCodeResponse,
     PostCodeResult,
     Weather,
     WeatherRangeVector,
@@ -17,11 +18,11 @@ import { toPascalCase } from '@common/helpers';
 import axios from 'axios';
 
 export async function convertPostcodeToGps(postcode: string) {
-    const response = await axios.get<PostCodeResult>(`${Postcode_Info_Url}/${postcode}`);
+    const response = await axios.get<PostCodeResponse>(`${Postcode_Info_Url}/${postcode}`);
 
     return {
-        latitude: response.data.latitude,
-        longitude: response.data.longitude,
+        latitude: response.data.result.latitude,
+        longitude: response.data.result.longitude,
     } as GPS;
 }
 
@@ -100,7 +101,9 @@ export function mapWeatherData(response: WeatherResponse) {
 export async function getWeatherFromStation(refPoint: GPS) {
     const settings = await getSettings();
     const sitesResponse = await axios.get<ObseervableSiteResponse>(Observations_Sites_Url, {
-        params: `key=${settings.apiKey}`,
+        params: {
+            key: settings.apiKey,
+        },
     });
 
     const nearestSite = getNearestSite(sitesResponse.data.Locations.Location, refPoint);
@@ -133,13 +136,3 @@ function getNearestSite(sites: ObservationLocation[], refPoint: GPS) {
         { distance: 1000000000, name: '', id: 0 },
     );
 }
-
-// function addDistanceToSites(sites: ObseervableSiteResponse, refPoint: GPS) {
-//   return sites.Locations.Location.map((site) => {
-//     const distance = getDistance(refPoint, {
-//       latitude: site.latitude,
-//       longitude: site.longitude,
-//     });
-//     return { name: site.name, distance, id: site.id } as LocationWithDistance;
-//   });
-// }

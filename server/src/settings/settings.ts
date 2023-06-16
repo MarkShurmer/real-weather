@@ -18,8 +18,6 @@ export function loadSettings() {
 
     // manual update
     appSettings.apiKey = process.env.API_KEY ?? '<tobefilled>';
-
-    logger.info(`Loaded settings for ${process.env.NODE_ENV}`);
 }
 
 export function isDev() {

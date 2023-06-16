@@ -1,24 +1,42 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyLoggerOptions, RawServerBase } from 'fastify';
 import Fastify from 'fastify';
 import { mainRoutes } from './main/main-routes';
 import { lookupRoutes } from './lookups/lookup-routes';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
+import { PinoLoggerOptions } from 'fastify/types/logger';
+import { isDev } from './settings';
 
-let app: FastifyInstance;
+const envToLogger: Record<string, boolean | (FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions)> = {
+    development: {
+        transport: {
+            target: 'pino-pretty',
+            options: {
+                translateTime: 'HH:MM:ss Z',
+                ignore: 'pid,hostname',
+            },
+        },
+    },
+    production: true,
+    test: false,
+};
 
-async function startApp() {
-    app = await Fastify({
-        logger: true,
-    });
+const app = Fastify({
+    logger: !process.env.NODE_ENV ? envToLogger['development'] : envToLogger[process.env.NODE_ENV],
+});
 
+function registerPlugins() {
     // add our middlewares
-    await app.register(cors, { origin: ['http://localhost:5173'] });
-    await app.register(helmet);
+    app.register(cors, { origin: ['http://localhost:5173'] });
+    app.register(helmet);
 
     // now add our routes
-    await app.register(mainRoutes);
-    await app.register(lookupRoutes);
+    app.register(mainRoutes);
+    app.register(lookupRoutes);
+
+    return app;
 }
 
-export { app, startApp };
+const logger = app.log;
+
+export { registerPlugins, logger, app };

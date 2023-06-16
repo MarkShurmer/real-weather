@@ -6,8 +6,14 @@ const jestConfig: JestConfigWithTsJest = {
     // Automatically clear mock calls, instances, contexts and results before every test
     clearMocks: true,
 
-    // An array of glob patterns indicating a set of files for which coverage information should be collected
-    // collectCoverageFrom: undefined,
+    coverageThreshold: {
+        global: {
+            branches: 90,
+            functions: 90,
+            lines: 90,
+            statements: 90,
+        },
+    },
 
     // The directory where Jest should output its coverage files
     coverageDirectory: 'coverage',

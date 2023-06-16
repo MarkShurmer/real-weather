@@ -29,7 +29,7 @@ describe('Lookup service', () => {
 
     describe('convertPostcodeToGps', () => {
         it('Gives gps co-ord for legit postcode', async () => {
-            axiosMock.onGet(`${Postcode_Info_Url}/sw1e1dd`).replyOnce(200, { longitude: 20, latitude: 10 });
+            axiosMock.onGet(`${Postcode_Info_Url}/sw1e1dd`).replyOnce(200, { result: { longitude: 20, latitude: 10 } });
 
             const result = await convertPostcodeToGps('sw1e1dd');
             expect(result.latitude).toBe(10);

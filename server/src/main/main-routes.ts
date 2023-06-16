@@ -1,4 +1,5 @@
 import { Routes } from '@common/routes';
+import { logger } from '@common/logger';
 import type { FastifyInstance } from 'fastify';
 
 /**
@@ -6,6 +7,8 @@ import type { FastifyInstance } from 'fastify';
  * @param {FastifyInstance} fastify  Encapsulated Fastify Instance
  */
 export async function mainRoutes(fastify: FastifyInstance) {
+    logger.info('Adding main routes');
+
     await fastify.get(Routes.Root, () => {
         return 'Hello from real weather api';
     });

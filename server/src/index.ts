@@ -1,14 +1,14 @@
-import { app, startApp } from './app';
+import { FastifyInstance } from 'fastify';
+import { registerPlugins, logger } from './app';
 import { getSettings } from './settings';
-
-const settings = getSettings();
 
 async function startServer() {
     try {
-        startApp();
+        const app = registerPlugins();
+        const settings = getSettings();
         await app.listen({ port: settings.port });
     } catch (err) {
-        app.log.error(err);
+        logger.error(err);
         process.exit(1);
     }
 }
