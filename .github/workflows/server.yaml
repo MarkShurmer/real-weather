@@ -111,9 +111,9 @@ jobs:
           username: ${{ env.IONOS_USERID }}
           password: ${{ env.IONOS_PW }}
           # port: $IONOS_PORT
-          script:
-            - whoami
-            - ls -al
+          script: |
+            whoami
+            ls -al
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'
