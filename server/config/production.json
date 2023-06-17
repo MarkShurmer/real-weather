@@ -1,0 +1,7 @@
+{
+    "port": 3000,
+    "host": "weather.shurms.com",
+    "auth0Domain": "",
+    "apiKey": "<tobefilled>"
+}
+
