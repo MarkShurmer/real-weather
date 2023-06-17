@@ -1,11 +1,10 @@
-import type { FastifyInstance, FastifyLoggerOptions, RawServerBase } from 'fastify';
+import type { FastifyLoggerOptions, RawServerBase } from 'fastify';
 import Fastify from 'fastify';
 import { mainRoutes } from './main/main-routes';
 import { lookupRoutes } from './lookups/lookup-routes';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import { PinoLoggerOptions } from 'fastify/types/logger';
-import { isDev } from './settings';
 
 const envToLogger: Record<string, boolean | (FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions)> = {
     development: {

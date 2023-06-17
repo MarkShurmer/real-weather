@@ -1,6 +1,5 @@
 import { toPascalCase } from '@common/helpers';
 
-
 describe('Helpers', () => {
     describe('toPascalCase', () => {
         it('should convert all lowercase', () => {
@@ -28,6 +27,4 @@ describe('Helpers', () => {
             expect(result).toEqual('');
         });
     });
-
-   
 });

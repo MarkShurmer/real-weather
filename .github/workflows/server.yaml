@@ -4,26 +4,18 @@ on:
     branches:
       - main
     paths:
-      - 'server/**'
-      - '.github/workflows/server.yaml'
+      - "server/**"
+      - ".github/workflows/server.yaml"
   pull_request: {}
 permissions:
   actions: write
   contents: read
 
 env:
-    # PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    # PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    # PROD_STACK_NAME: real-weather-server
-    # PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    # PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::388995839124:user/Mark
-    # PROD_ARTIFACTS_BUCKET: real-weather
-    # PROD_REGION: eu-west-2
-
-    SAM_TEMPLATE: template.yaml
-    IONOS_USERID:  ${{ secrets.IONOS_USERID }}
-    IONOS_PW: ${{ secrets.IONOS_PASSWORD }}
-    IONOS_URL: ${{ secrets.IONOS_URL }}
+  IONOS_USERID: ${{ secrets.IONOS_USERID }}
+  IONOS_PW: ${{ secrets.IONOS_PASSWORD }}
+  IONOS_URL: ${{ vars.IONOS_URL }}
+  IONOS_PORT: ${{ vars.IONOS_PORT }}
 
 jobs:
   verify:
@@ -44,7 +36,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.5.0
-          cache: 'yarn'
+          cache: "yarn"
           cache-dependency-path: server/yarn.lock
 
       - name: Run install
@@ -65,12 +57,12 @@ jobs:
           name: coverage summary
           path: |
             server/coverage/coverage*.json
-        
+
       - name: Coverage Summary Markdown
         uses: autoscatto/action-coverage-summary-markdown@v1.0.6
         id: coverage_summary_markdown
         with:
-          summary_file: 'server/coverage/coverage-summary.json'
+          summary_file: "server/coverage/coverage-summary.json"
           warning_threshold: 65
           good_threshold: 90
           fail_if: true
@@ -98,25 +90,27 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.5.0
-          cache: 'yarn'
+          cache: "yarn"
           cache-dependency-path: server/yarn.lock
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Build them
+        run: yarn build
 
       # - name: Build docker image
       #   run: yarn build:docker
       # - name: Deploy docker image to repo
       #   run: ssh docker images
       # - name: Deploy docker image to ionos
-      #   run: ssh ${IONOS_USERID}@${IONOS_URL} 
+      #   run: ssh ${IONOS_USERID}@${IONOS_URL}
       - name: Deploy to remote
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${IONOS_URL} 
-          username: ${IONOS_USERID}
-          password: ${PASSWORD}
-          port: ${{ secrets.PORT }}
+          host: $IONOS_URL
+          username: $IONOS_USERID
+          password: $PASSWORD
+          port: $IONOS_PORT
           script: whoami
 
   # build-and-package:
@@ -185,4 +179,4 @@ jobs:
   #                 --template packaged-prod.yaml \
   #                 --capabilities CAPABILITY_IAM \
   #                 --region ${PROD_REGION} \
-  #                 --no-fail-on-empty-changeset 
+  #                 --no-fail-on-empty-changeset
