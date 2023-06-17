@@ -110,7 +110,7 @@ jobs:
           host: $IONOS_URL
           username: $IONOS_USERID
           password: $PASSWORD
-          port: $IONOS_PORT
+          # port: $IONOS_PORT
           script: whoami
 
   # build-and-package:
