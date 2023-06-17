@@ -1,4 +1,3 @@
-import { FastifyInstance } from 'fastify';
 import { registerPlugins, logger } from './app';
 import { getSettings } from './settings';
 

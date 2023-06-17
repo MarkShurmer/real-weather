@@ -1,5 +1,4 @@
 import type { AppSettings } from '@settings/settings-types';
-import { logger } from '@common/logger';
 import defaultSettings from '@config/default.json';
 import prodSettings from '@config/production.json';
 

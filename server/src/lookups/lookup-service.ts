@@ -5,7 +5,6 @@ import {
     ObseervableSiteResponse,
     ObservationLocation,
     PostCodeResponse,
-    PostCodeResult,
     Weather,
     WeatherRangeVector,
     WeatherResponse,

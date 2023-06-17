@@ -37,6 +37,7 @@
         "test:ci": "jest --coverage --coverageReporters='json-summary'",
         "lint": "eslint . --fix",
         "typecheck": "tsc",
-        "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/index.js."
+        "build": "tsc --project tsconfig-build.json",
+        "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/src/index.js"
     }
 }
