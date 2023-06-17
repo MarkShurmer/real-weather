@@ -107,11 +107,13 @@ jobs:
       - name: Deploy to remote
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: $IONOS_URL
-          username: $IONOS_USERID
-          password: $PASSWORD
+          host: ${{ env.IONOS_URL }}
+          username: ${{ env.IONOS_USERID }}
+          password: ${{ env.IONOS_PW }}
           # port: $IONOS_PORT
-          script: whoami
+          script:
+            - whoami
+            - ls -al
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'
