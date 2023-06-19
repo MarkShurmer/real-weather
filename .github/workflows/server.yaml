@@ -18,6 +18,7 @@ env:
   IONOS_PORT: ${{ vars.IONOS_PORT }}
   DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
 
 jobs:
   verify:
@@ -83,6 +84,11 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-deploy
       cancel-in-progress: true
     steps:
+      - name: Inc build number
+        uses: action-pack/increment@v2
+        with:
+          name: "BUILD_NUMBER"
+          token: ${{ env.REPO_ACCESS_TOKEN }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -94,7 +100,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{secrets.DOCKER_USERNAME}}/real-weather:${{ github.run_number }}
+          tags: ${{secrets.DOCKER_USERID}}/real-weather:${{ env.BUILD_NUMBER }}
 
   # deploy:
   #   name: 🐳 Deploy
@@ -163,7 +169,7 @@ jobs:
           # port: $IONOS_PORT
           script: |
             docker stop real-weather-server
-            docker run --name real-weather-server -d -t ${{secrets.DOCKER_USERNAME}}/real-weather:${{ github.run_number }}
+            docker run --name real-weather-server -d -t ${{secrets.DOCKER_USERID}}/real-weather:${{ env.BUILD_NUMBER }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'
