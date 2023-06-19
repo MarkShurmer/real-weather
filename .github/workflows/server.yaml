@@ -96,6 +96,8 @@ jobs:
       #   with:
       #     push: true
       #     tags: ${{secrets.DOCKER_USERID}}/real-weather:${{ env.BUILD_NUMBER }}
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
       - name: Login to docker hub
         run: docker login -u  ${{ env.DOCKER_USERID }} -p  ${{ env.DOCKER_TOKEN }}
       - name: Build docker
