@@ -5,7 +5,7 @@ async function startServer() {
     try {
         const app = registerPlugins();
         const settings = getSettings();
-        await app.listen({ port: settings.port });
+        await app.listen({ port: settings.port, host: settings.host });
     } catch (err) {
         logger.error(err);
         process.exit(1);

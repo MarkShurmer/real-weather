@@ -1,5 +1,3 @@
 GET http://localhost:3000/weather?postcode=kt70ny
 
 ###
-
-GET http://localhost:4000/healthcheck
