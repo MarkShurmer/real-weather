@@ -171,7 +171,7 @@ jobs:
           password: ${{ env.IONOS_PW }}
           # port: $IONOS_PORT
           script: |
-            docker stop real-weather-server
+            docker kill real-weather-server || true
             docker run --name real-weather-server -d -t ${{ env.BUILD_NUMBER }}
 
   # build-and-package:
