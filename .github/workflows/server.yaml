@@ -94,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: "real-weather:${{ env.GITHUB_RUN_NUMBER }}"
+          tags: ${{secrets.DOCKER_USERNAME}}/real-weather:${{ github.run_number }}
 
   # deploy:
   #   name: 🐳 Deploy
@@ -145,7 +145,7 @@ jobs:
   deploy:
     name: 🐳 Deploy
     if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
-    needs: [verify]
+    needs: [build]
     defaults:
       run:
         working-directory: server
@@ -163,7 +163,7 @@ jobs:
           # port: $IONOS_PORT
           script: |
             docker stop real-weather-server
-            docker run --name real-weather-server -d -t real-weather:${{ env.GITHUB_RUN_NUMBER }}
+            docker run --name real-weather-server -d -t ${{secrets.DOCKER_USERNAME}}/real-weather:${{ github.run_number }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'
