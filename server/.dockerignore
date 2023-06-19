@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+**/*.log
+.aws-sam
+packaged*.yaml
+eslint*.*
+.git*.*
+.prettier*.*
+Dockerfile
+jest*.*
