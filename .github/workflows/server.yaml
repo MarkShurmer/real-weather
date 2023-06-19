@@ -74,6 +74,14 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
+    needs: [verify]
+    defaults:
+      run:
+        working-directory: server
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      cancel-in-progress: true
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -86,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: MarkShurmer/real-weather:${GITHUB_RUN_NUMBER}
+          tags: MarkShurmer/real-weather:${{ env.GITHUB_RUN_NUMBER }}
 
   # deploy:
   #   name: 🐳 Deploy
@@ -136,7 +144,6 @@ jobs:
 
   deploy:
     name: 🐳 Deploy
-    # only build/deploy main branch on pushes
     if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
     needs: [verify]
     defaults:
@@ -156,7 +163,7 @@ jobs:
           # port: $IONOS_PORT
           script: |
             docker stop real-weather-server
-            docker run --name real-weather-server -d -t real-weather:${GITHUB_RUN_NUMBER}
+            docker run --name real-weather-server -d -t real-weather:${{ env.GITHUB_RUN_NUMBER }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'
