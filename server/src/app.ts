@@ -26,7 +26,7 @@ const app = Fastify({
 
 function registerPlugins() {
     // add our middlewares
-    app.register(cors, { origin: ['http://localhost:5173'] });
+    app.register(cors, { origin: ['http://localhost:8080'] });
     app.register(helmet);
 
     // now add our routes

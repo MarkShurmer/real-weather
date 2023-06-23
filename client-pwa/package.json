@@ -41,9 +41,10 @@
         "jest-environment-jsdom": "^29.5.0",
         "prettier": "^2.8.8",
         "react-jss": "^10.10.0",
+        "rimraf": "^5.0.1",
         "style-loader": "^3.3.2",
         "ts-jest": "^29.1.0",
-        "ts-loader": "^9.4.2",
+        "ts-loader": "^9.4.3",
         "ts-node": "^10.9.1",
         "tsconfig-paths": "^4.2.0",
         "tsconfig-paths-webpack-plugin": "^4.0.1",
@@ -53,8 +54,8 @@
         "webpack-dev-server": "^4.15.0"
     },
     "scripts": {
-        "dev": "webpack serve --config webpack.config.js --env env=development",
-        "build": "webpack --config webpack.config.js --env env=production",
+        "dev": "webpack serve --config webpack.config.js",
+        "build": "rimraf dist && webpack --config webpack.config-prod.js",
         "lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx,json}\"",
         "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
         "test": "jest --watchAll",

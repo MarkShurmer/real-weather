@@ -18,7 +18,7 @@ env:
   IONOS_PORT: ${{ vars.IONOS_PORT }}
   DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-  BUILD_NUMBER: 1
+  BUILD_NUMBER: 2
 
 jobs:
   verify:
@@ -160,7 +160,7 @@ jobs:
           # port: $IONOS_PORT
           script: |
             docker kill real-weather-server || true
-            docker run --name real-weather-server -d -t ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
+            docker run --name real-weather-server -d -p 3000:3000 -e API_KEY=${{ env.API_KEY }} ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'

@@ -4,98 +4,111 @@ on:
     branches:
       - main
     paths:
-      - 'client-pwa/**'
-      - '.github/workflows/client-pwa.yaml'
+      - "client-pwa/**"
+      - ".github/workflows/client-pwa.yaml"
   pull_request: {}
 
 permissions:
-    actions: write
-    contents: read
+  actions: write
+  contents: read
+
+env:
+  BUILD_NUMBER: 1
 
 jobs:
-    verify:
-        name: ⬣ Verify
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: client-pwa
-        concurrency:
-            group: ${{ github.workflow }}-${{ github.ref }}-verify
-            cancel-in-progress: true
+  verify:
+    name: ⬣ Verify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client-pwa
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-verify
+      cancel-in-progress: true
 
-        steps:
-            - name: ⬇️ Checkout repo
-              uses: actions/checkout@v3
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
 
-            - name: ⎔ Setup node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18.5.0
-                  cache: 'yarn'
-                  cache-dependency-path: client-pwa/yarn.lock
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.5.0
+          cache: "yarn"
+          cache-dependency-path: client-pwa/yarn.lock
 
-            - name: Run install
-              run: yarn install --frozen-lockfile
+      - name: Run install
+        run: yarn install --frozen-lockfile
 
-            - name: Run lint
-              run: yarn lint
+      - name: Run lint
+        run: yarn lint
 
-            - name: Run typecheck
-              run: yarn typecheck
+      - name: Run typecheck
+        run: yarn typecheck
 
-            - name: Run test
-              run: yarn test:ci
+      - name: Run test
+        run: yarn test:ci
 
-            - name: Archive test artifacts
-              uses: actions/upload-artifact@v3
-              with:
-                name: coverage summary
-                path: |
-                  client-pwa/coverage/coverage*.json
-                  client-pwa/coverage/index.html
-            
-            - name: Coverage Summary Markdown
-              uses: autoscatto/action-coverage-summary-markdown@v1.0.6
-              id: coverage_summary_markdown
-              with:
-                summary_file: 'client-pwa/coverage/coverage-summary.json'
-                warning_threshold: 65
-                good_threshold: 90
-                fail_if: true
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage summary
+          path: |
+            client-pwa/coverage/coverage*.json
+            client-pwa/coverage/index.html
 
-            - name: Display summary
-              run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
+      - name: Coverage Summary Markdown
+        uses: autoscatto/action-coverage-summary-markdown@v1.0.6
+        id: coverage_summary_markdown
+        with:
+          summary_file: "client-pwa/coverage/coverage-summary.json"
+          warning_threshold: 65
+          good_threshold: 90
+          fail_if: true
 
-    deploy:
-        name: ⬣ Deploy
-        if: github.ref == 'refs/heads/main'
-        needs: verify
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: client-pwa
-        concurrency:
-            group: ${{ github.workflow }}-${{ github.ref }}-deploy
-            cancel-in-progress: true
+      - name: Display summary
+        run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
 
-        steps:
-            - name: ⬇️ Checkout repo
-              uses: actions/checkout@v3
+  deploy:
+    name: ⬣ Deploy
+    if: github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client-pwa
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      cancel-in-progress: true
 
-            - name: ⎔ Setup node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18.5.0
-                  cache: 'yarn'
-                  cache-dependency-path: client-pwa/yarn.lock
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
 
-            - run: yarn install --frozen-lockfile
-            - run: yarn build
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.5.0
+          cache: "yarn"
+          cache-dependency-path: client-pwa/yarn.lock
 
-            - name: deploy to s3
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: eu-west-2
-            - run: aws s3 sync ./dist s3://real-weather
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - name: Deploy to remote
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ env.IONOS_URL }}
+          username: ${{ env.IONOS_USERID }}
+          password: ${{ env.IONOS_PW }}
+          # port: $IONOS_PORT
+          script: |
+            docker kill real-weather-client || true
+            docker run --name real-weather-client -d -p 80:80 ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+
+      # - name: deploy to s3
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #       aws-region: eu-west-2
+      # - run: aws s3 sync ./dist s3://real-weather
