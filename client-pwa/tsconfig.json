@@ -26,6 +26,5 @@
             "@api/*": ["src/api/*"]
         }
     },
-    "include": ["src", "test-utils"],
-    "exclude": ["node_modules", "build"]
+    "include": ["src", "test-utils"]
 }

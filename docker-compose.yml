@@ -1,0 +1,13 @@
+services:
+  front-end:
+    build: client-pwa
+    ports:
+      - "8080:80"
+  
+  back-end:
+    build: server
+    ports:
+      - "3000:3000"
+    environment:
+      API_KEY: $API_KEY
+    

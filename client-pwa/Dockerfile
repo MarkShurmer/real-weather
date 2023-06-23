@@ -1,25 +1,26 @@
-FROM node:alpine:18.15.1 as build-stage
+FROM node:lts-alpine as build-stage
 
-LABEL name="app-name"
-ENV APP_PORT=3000 APP_DIR=/app
+LABEL name="real-westher web"
+ENV APP_PORT=4000 APP_DIR=/app
 
-WORKDIR APP_DIR
+WORKDIR $APP_DIR
 
-ADD package.json .
-ADD yarn.lock .
-ADD src .
+ADD . .
 
+RUN cat tsconfig-build.json
 RUN yarn install --frozen-lock-file 
 RUN yarn build
 
-FROM node:alpine:18.15.1 as deploy-stage
-ADD dist .
-ADD public .
+# FROM node:alpine:18.15.1 as deploy-stage
+# ADD dist .
+# ADD public .
+FROM httpd:alpine as deploy-stage
+# WORKDIR /var/www/html
+COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
 
-HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost:APP_PORT/health || exit 1
+# HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost || exit 1
 
-EXPOSE APP_PORT
+# EXPOSE $APP_PORT
 
-ENTRYPOINT [ "node", "main.js" ]
+# ENTRYPOINT [ "yarn", "start" ]
 
-CMD [ "" ]
