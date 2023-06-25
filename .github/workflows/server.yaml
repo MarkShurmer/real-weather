@@ -81,7 +81,7 @@ jobs:
       run:
         working-directory: server
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: true
     steps:
       - name: ⬇️ Checkout repo

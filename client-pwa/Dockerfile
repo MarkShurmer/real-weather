@@ -14,13 +14,17 @@ RUN yarn build
 # FROM node:alpine:18.15.1 as deploy-stage
 # ADD dist .
 # ADD public .
-FROM httpd:alpine as deploy-stage
+FROM node:lts-alpine as deploy-stage
 # WORKDIR /var/www/html
-COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
+WORKDIR /app
+# COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
+COPY --from=build-stage /app/dist .
+COPY package.json .
+RUN yarn install --frozen-lock-file 
 
-# HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost || exit 1
+HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost:$APP_PORT || exit 1
 
-# EXPOSE $APP_PORT
+EXPOSE $APP_PORT
 
-# ENTRYPOINT [ "yarn", "start" ]
+ENTRYPOINT [ "yarn", "start" ]
 
