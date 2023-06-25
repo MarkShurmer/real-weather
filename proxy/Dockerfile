@@ -6,6 +6,6 @@ WORKDIR /usr/share/nginx
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy static assets from builder stage
-COPY nginx.conf /etc/nginx/conf.d/real-weather.conf
+COPY *.conf /etc/nginx/conf.d
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

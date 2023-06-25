@@ -15,4 +15,7 @@ services:
     build: proxy
     ports: 
       - "80:80"
+    extra_hosts:
+      weather.shurms.com: "127.0.0.1"
+      weather-api.shurms.com: "127.0.0.1"
 
