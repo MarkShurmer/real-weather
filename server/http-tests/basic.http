@@ -1,13 +1,13 @@
-GET http://0.0.0.0:3000/
+GET http://localhost:3000/
 
 ###
 
 GET http://localhost:3000/health-check
 
+### docker versions
+
+GET http://weather-api.shurms.com
+
 ###
 
-GET http://weather.shurms.com:3000
-
-###
-
-GET http://shurms.com:3000/health-check
+GET http://weather-api.shurms.com/health-check

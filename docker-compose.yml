@@ -2,7 +2,10 @@ services:
   front-end:
     build: client-pwa
     ports:
-      - "8080:80"
+      - "80:80"
+    extra_hosts:
+      weather.shurms.com: "127.0.0.1"
+      weather-api.shurms.com: "127.0.0.1"
   
   back-end:
     build: server
@@ -11,11 +14,11 @@ services:
     environment:
       API_KEY: $API_KEY
     
-  proxy:
-    build: proxy
-    ports: 
-      - "80:80"
-    extra_hosts:
-      weather.shurms.com: "127.0.0.1"
-      weather-api.shurms.com: "127.0.0.1"
+  # proxy:
+  #   build: proxy
+  #   ports: 
+  #     - "80:80"
+  #   extra_hosts:
+  #     weather.shurms.com: "127.0.0.1"
+  #     weather-api.shurms.com: "127.0.0.1"
 

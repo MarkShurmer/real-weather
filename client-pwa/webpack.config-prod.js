@@ -10,6 +10,7 @@ module.exports = {
         filename: 'bundle.js',
     },
     mode: 'production',
+    devtool: 'source-map',
     module: {
         rules: [
             {
