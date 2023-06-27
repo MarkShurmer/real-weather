@@ -16,9 +16,9 @@ env:
   IONOS_PW: ${{ secrets.IONOS_PW }}
   IONOS_URL: ${{ vars.IONOS_URL }}
   IONOS_PORT: ${{ vars.IONOS_PORT }}
-  DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
+  DOCKER_USERID: ${{ vars.DOCKER_USERID }}
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-  BUILD_NUMBER: 2
+  BUILD_NUMBER: 3
 
 jobs:
   verify:
