@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  IONOS_USERID: ${{ secrets.IONOS_USERID }}
+  IONOS_USERID: ${{ vars.IONOS_USERID }}
   IONOS_PW: ${{ secrets.IONOS_PW }}
   IONOS_URL: ${{ vars.IONOS_URL }}
   IONOS_PORT: ${{ vars.IONOS_PORT }}
