@@ -75,10 +75,30 @@ jobs:
       - name: Display summary
         run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
 
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
+    needs: [verify]
+    defaults:
+      run:
+        working-directory: client-pwa
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build
+      cancel-in-progress: true
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u  ${{ env.DOCKER_USERID }} -p  ${{ env.DOCKER_TOKEN }}
+      - name: Build docker
+        run: docker build . --progress plain -t ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+      - name: Push docker image
+        run: docker push ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+
   deploy:
     name: ⬣ Deploy
     if: github.ref == 'refs/heads/main'
-    needs: verify
+    needs: [build]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -88,19 +108,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.5.0
-          cache: "yarn"
-          cache-dependency-path: client-pwa/yarn.lock
-
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - name: Deploy to remote
+      - name: Deploy on remote
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ env.IONOS_URL }}
