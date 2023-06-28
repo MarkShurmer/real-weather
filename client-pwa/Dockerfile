@@ -7,7 +7,6 @@ WORKDIR $APP_DIR
 
 ADD . .
 
-RUN cat tsconfig-build.json
 RUN yarn install --frozen-lock-file 
 RUN yarn build
 

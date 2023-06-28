@@ -151,16 +151,25 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
+      # - name: copy file via ssh
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ env.IONOS_URL }}
+      #     username: ${{ env.IONOS_USERID }}
+      #     password: ${{ env.IONOS_PW }}
+      #     source: "docker-compose.yml"
+      #     target: /real-weather
       - name: Deploy to remote
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ env.IONOS_URL }}
           username: ${{ env.IONOS_USERID }}
           password: ${{ env.IONOS_PW }}
-          # port: $IONOS_PORT
           script: |
             docker kill real-weather-server || true
-            docker run --name real-weather-server -d -p 3000:3000 -e API_KEY=${{ env.API_KEY }} ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
+            docker system prune -f || true
+            docker network create real-weather || true
+            docker run --name real-weather-server -d -p 3000:3000 -e API_KEY=${{ env.API_KEY }} -e NODE_ENV=production --network=real-weather ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'

@@ -108,16 +108,26 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Deploy on remote
+      - name: copy file via ssh
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ env.IONOS_URL }}
+          username: ${{ env.IONOS_USERID }}
+          password: ${{ env.IONOS_PW }}
+          source: "docker-compose.yml"
+          target: /real-weather
+      - name: Restart the services using new images
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ env.IONOS_URL }}
           username: ${{ env.IONOS_USERID }}
           password: ${{ env.IONOS_PW }}
-          # port: $IONOS_PORT
           script: |
             docker kill real-weather-client || true
-            docker run --name real-weather-client -d -p 80:80 ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+            docker system prune -f || true
+            docker network create real-weather || true
+            docker kill real-weather-client || true
+            docker run --name real-weather-client -d -p 80:80 --network=real-weather ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
 
       # - name: deploy to s3
       #   uses: aws-actions/configure-aws-credentials@v2
