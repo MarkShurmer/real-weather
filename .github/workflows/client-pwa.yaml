@@ -13,11 +13,10 @@ permissions:
   contents: read
 
 env:
-  IONOS_USERID: ${{ vars.IONOS_USERID }}
+  IONOS_USERID: ${{ secrets.IONOS_USERID }}
   IONOS_PW: ${{ secrets.IONOS_PW }}
-  IONOS_URL: ${{ vars.IONOS_URL }}
-  IONOS_PORT: ${{ vars.IONOS_PORT }}
-  DOCKER_USERID: ${{ vars.DOCKER_USERID }}
+  IONOS_URL: ${{ secrets.IONOS_URL }}
+  DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
   BUILD_NUMBER: 2
 
@@ -108,14 +107,14 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: copy file via ssh
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ env.IONOS_URL }}
-          username: ${{ env.IONOS_USERID }}
-          password: ${{ env.IONOS_PW }}
-          source: "docker-compose.yml"
-          target: /real-weather
+      # - name: copy file via ssh
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ env.IONOS_URL }}
+      #     username: ${{ env.IONOS_USERID }}
+      #     password: ${{ env.IONOS_PW }}
+      #     source: "docker-compose.yml"
+      #     target: /real-weather
       - name: Restart the services using new images
         uses: appleboy/ssh-action@v0.1.10
         with:
