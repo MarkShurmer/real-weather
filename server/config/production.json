@@ -1,6 +1,6 @@
 {
     "port": 3000,
-    "host": "back-end",
+    "host": "real-weather-server",
     "auth0Domain": "",
     "apiKey": "<tobefilled>"
 }
