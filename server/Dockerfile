@@ -1,6 +1,6 @@
 FROM node:lts as build-stage
 LABEL name="real-weather-server"
-ENV APP_PORT=3000
+ENV APP_PORT=3000 API_KEY=
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ COPY --from=build-stage app/package.json .
 
 RUN yarn install --frozen-lock-file --production
 
-HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost:$APP_PORT/health-check || exit 1
+HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost:3000/health-check || exit 1
 
 EXPOSE $APP_PORT
 

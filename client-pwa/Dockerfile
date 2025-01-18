@@ -1,7 +1,6 @@
 FROM node:lts as build-stage
 
 LABEL name="real-weather web"
-ENV APP_PORT=4000 APP_DIR=/app
 
 WORKDIR $APP_DIR
 
@@ -27,5 +26,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY --from=build-stage  /app/dist .
 COPY deployment/*.conf /etc/nginx/conf.d/
+
+HEALTHCHECK --interval=15s --timeout=10s --retries=3 CMD curl -f http://localhost || exit 1
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
