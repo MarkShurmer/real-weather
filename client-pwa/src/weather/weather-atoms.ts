@@ -7,7 +7,9 @@ export const postCodeAtom = atom<string>({
     default: '',
 });
 
-export const weatherState = selector<Weather | null>({
+export type WeatherState = { type: 'errored'; error: string } | { type: 'succeeded'; weather: Weather };
+
+export const weatherState = selector<WeatherState>({
     key: 'weather',
     get: async ({ get }) => {
         const postcode = get(postCodeAtom);
@@ -18,13 +20,16 @@ export const weatherState = selector<Weather | null>({
 
             const response = await fetch(url);
 
-            if (response.ok) {
+            if (response.status === 200) {
                 const data = (await response.json()) as Weather;
 
-                return data;
+                return { type: 'succeeded', weather: data };
+            } else {
+                const errorResp = (await response.json()) as { error: string };
+                return { type: 'errored', error: errorResp.error };
             }
         }
 
-        return null;
+        return { type: 'errored', error: 'Postcode was too short' };
     },
 });

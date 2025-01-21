@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { weatherState } from './weather-atoms';
-import { WeatherReport } from '@api/api-contracts';
 import { useWeatherStyles } from '@weather/CurrentWeather.styles';
 import { Visibility } from '@weather/Visibility';
 import { format } from 'date-fns';
@@ -14,18 +13,20 @@ function formatDate(date: string) {
 const DEGREE_SYMBOL = '\u00B0';
 
 export default function CurrentWeather() {
-    const weather = useRecoilValue(weatherState);
+    const weatherInstance = useRecoilValue(weatherState);
     const classes = useWeatherStyles();
 
-    if (!weather) {
+    if (weatherInstance.type === 'errored') {
         return (
             <section className={classes.container} role="status">
                 <div>Unable to retreive any current weather</div>
+                <div>{weatherInstance.error}</div>
             </section>
         );
     }
 
-    const report = weather.report as WeatherReport;
+    const weather = weatherInstance.weather;
+    const report = weatherInstance.weather.report;
 
     return (
         <section className={classes.container} role="main">
