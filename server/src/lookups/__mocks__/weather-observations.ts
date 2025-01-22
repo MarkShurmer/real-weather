@@ -1,5 +1,16 @@
 import { WeatherResponse } from '@lookups/types';
-import { getDateNow } from '@root/common/date-service';
+
+export enum ObservationTypes {
+    ObsExcellentVisibility,
+    ObsGoodVisibility,
+    ObsModerateVisibility,
+    ObsNoParam,
+    ObsPoorVisibility,
+    ObsUnknownVisibility,
+    ObsVeryGoodVisibility,
+    ObsVeryPoorVisibility,
+    Observation,
+}
 
 const param = [
     {
@@ -54,13 +65,13 @@ const param = [
     },
 ];
 
-export const weatherObservation: WeatherResponse = {
+const getWeatherObservation = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -271,15 +282,15 @@ export const weatherObservation: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsUnknownVisibility: WeatherResponse = {
+const getUnknownVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -313,15 +324,15 @@ export const weatherObsUnknownVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsVeryPoorVisibility: WeatherResponse = {
+const getVeryPoorVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -355,15 +366,15 @@ export const weatherObsVeryPoorVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsPoorVisibility: WeatherResponse = {
+const getPoorVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -397,15 +408,15 @@ export const weatherObsPoorVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsModerateVisibility: WeatherResponse = {
+const getModerateVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -439,15 +450,15 @@ export const weatherObsModerateVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsGoodVisibility: WeatherResponse = {
+const getGoodVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -481,15 +492,15 @@ export const weatherObsGoodVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsVeryGoodVisibility: WeatherResponse = {
+const getVeryGoodVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -523,15 +534,15 @@ export const weatherObsVeryGoodVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsExcellentVisibility: WeatherResponse = {
+const getExcellentVisibility = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: param,
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -565,15 +576,15 @@ export const weatherObsExcellentVisibility: WeatherResponse = {
             },
         },
     },
-};
+});
 
-export const weatherObsNoParam: WeatherResponse = {
+const getNoParam = (): WeatherResponse => ({
     SiteRep: {
         Wx: {
             Param: [],
         },
         DV: {
-            dataDate: getDateNow(),
+            dataDate: new Date(),
             type: 'Obs',
             Location: {
                 i: 3002,
@@ -607,4 +618,20 @@ export const weatherObsNoParam: WeatherResponse = {
             },
         },
     },
+});
+
+const mapObs: Record<ObservationTypes, typeof getWeatherObservation> = {
+    [ObservationTypes.ObsExcellentVisibility]: getExcellentVisibility,
+    [ObservationTypes.ObsGoodVisibility]: getGoodVisibility,
+    [ObservationTypes.ObsModerateVisibility]: getModerateVisibility,
+    [ObservationTypes.ObsNoParam]: getNoParam,
+    [ObservationTypes.Observation]: getWeatherObservation,
+    [ObservationTypes.ObsPoorVisibility]: getPoorVisibility,
+    [ObservationTypes.ObsUnknownVisibility]: getUnknownVisibility,
+    [ObservationTypes.ObsVeryGoodVisibility]: getVeryGoodVisibility,
+    [ObservationTypes.ObsVeryPoorVisibility]: getVeryPoorVisibility,
 };
+
+export function getObservation(type: ObservationTypes): WeatherResponse {
+    return mapObs[type]();
+}

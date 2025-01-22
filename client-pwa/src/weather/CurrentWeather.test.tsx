@@ -1,15 +1,16 @@
-import { render, screen } from '@test-utils/custom-render';
+import { screen } from '@test-utils/custom-render';
 import CurrentWeather from './CurrentWeather';
 import { Suspense } from 'react';
 import { flushPromisesAndTimers, partiallyMock } from '@test-utils/test-helpers';
-import { MutableSnapshot } from 'recoil';
-import { postCodeAtom } from '@weather/weather-atoms';
+import { weatherState } from '@weather/weather-atoms';
 import { mockWeather } from './__mocks__/weather-mocks';
 import Loading from '@/loading/Loading';
+import { createRecoilMockWrapper } from 'recoil-mock';
+import { render } from '@testing-library/react';
 
-const initializeState = ({ set }: MutableSnapshot) => {
-    set(postCodeAtom, 'sw1a 1ff');
-};
+// const initializeState = ({ set }: MutableSnapshot) => {
+//     set(postCodeAtom, 'sw1a 1ff');
+// };
 
 describe('CurrentWeather component', () => {
     beforeAll(() => {
@@ -26,16 +27,20 @@ describe('CurrentWeather component', () => {
         jest.useRealTimers();
     });
 
-    it('should give no data message when weather state is null, due to invalid postcode', async () => {
-        const initializeState = ({ set }: MutableSnapshot) => {
-            set(postCodeAtom, 'abc');
-        };
+    it('should give no data message when weather state is loading', async () => {
+        // const initializeState = ({ set }: MutableSnapshot) => {
+        //     set(postCodeAtom, 'abc');
+        // };
+        const { context, wrapper } = createRecoilMockWrapper();
+        context.set(weatherState, {
+            type: 'loading',
+        });
+
         render(
             <Suspense fallback={<Loading />}>
                 <CurrentWeather />
             </Suspense>,
-            {},
-            initializeState,
+            { wrapper },
         );
         await flushPromisesAndTimers();
 
@@ -43,18 +48,29 @@ describe('CurrentWeather component', () => {
     });
 
     it('should show weather section when weather has been set', async () => {
+        const { context, wrapper } = createRecoilMockWrapper();
+
+        // const initializeState = ({ set }: MutableSnapshot) => {
+        //     set(weatherState, {
+        //         type: 'succeeded',
+        //         weather: mockWeather,
+        //     });
+        // };
+        context.set(weatherState, {
+            type: 'succeeded',
+            weather: mockWeather,
+        });
+
         render(
             <Suspense fallback={<Loading />}>
                 <CurrentWeather />
             </Suspense>,
-            {},
-            initializeState,
+            { wrapper },
         );
         await flushPromisesAndTimers();
 
-        const loadingElements = await screen.queryByText('Loading...');
+        const elements = await screen.queryByRole('contentinfo');
 
-        expect(screen.getByRole('main')).toBeInTheDocument();
-        expect(loadingElements).toBeNull();
+        expect(elements).not.toBeNull();
     });
 });

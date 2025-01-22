@@ -25,7 +25,7 @@ describe('Home page', () => {
         fireEvent.change(postCodeInput, { target: { value: 'br28pp' } });
         fireEvent.click(cta);
 
-        await waitFor(() => screen.getByRole('main'));
-        expect(screen.getByRole('main')).toBeInTheDocument();
+        await waitFor(() => screen.getByTestId('home'));
+        expect(screen.getByTestId('home')).toBeInTheDocument();
     });
 });

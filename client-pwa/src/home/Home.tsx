@@ -23,7 +23,7 @@ export function Home() {
     };
 
     return (
-        <section className={classes.contentView}>
+        <section className={classes.contentView} data-testid="home">
             <div className={classes.subHeader}>Enter your postcode to get nearest current info</div>
             <div className={classes.buttonsContainer} role="search">
                 <InputText placeholder="Enter postcode" ref={addrRef} />

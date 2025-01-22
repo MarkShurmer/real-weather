@@ -7,7 +7,7 @@ import ErrorFallback from './error/ErrorFallback';
 function App() {
     return (
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <section className="App">
+            <section className="App" role="main">
                 <div>Header</div>
                 <Home />
             </section>

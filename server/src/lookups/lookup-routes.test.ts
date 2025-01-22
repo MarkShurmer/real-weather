@@ -4,30 +4,35 @@ import { convertPostcodeToGps, getWeatherFromStation } from '@lookups/lookup-ser
 import { partiallyMock } from '@common/helpers';
 import { GPS, Weather, WeatherRequest } from '@lookups/types';
 import { FastifyInstance, FastifyReply } from 'fastify';
+import { AxiosError } from 'axios';
 
 jest.mock('@lookups/lookup-service');
 
 describe('Lookup routes', () => {
     let mockedConvert: jest.MockedFunction<(postcode: string) => Promise<GPS>>;
     let mockedWeather: jest.MockedFunction<typeof getWeatherFromStation>;
-    const mockErrorLog = jest.fn();
-    const mockStatus = jest.fn();
-    const mockLog = { error: mockErrorLog };
+    const mockSend = jest.fn();
+    const mockStatus = jest.fn().mockReturnValue({ send: mockSend });
+    const mockLog = { error: jest.fn(), info: jest.fn() };
+    const baseDate = new Date();
 
     beforeAll(() => {
         mockedConvert = jest.mocked(convertPostcodeToGps);
         mockedWeather = jest.mocked(getWeatherFromStation);
-        jest.useFakeTimers().setSystemTime(new Date('2023-04-04'));
     });
 
-    afterAll(() => {
+    beforeEach(() => {
+        jest.useFakeTimers().setSystemTime(baseDate);
+    });
+
+    afterEach(() => {
         jest.useRealTimers();
     });
 
     it('should register weather handler', async () => {
         const mockGet = jest.fn();
 
-        await lookupRoutes(partiallyMock<FastifyInstance>({ get: mockGet }));
+        await lookupRoutes(partiallyMock<FastifyInstance>({ get: mockGet, log: mockLog }));
 
         expect(mockGet).toHaveBeenCalledWith(
             Routes.Weather,
@@ -48,10 +53,9 @@ describe('Lookup routes', () => {
     });
 
     it('should get message when error from handler', async () => {
-        const error = new Error('Invalid');
-        mockedConvert.mockRejectedValue(error);
+        mockedConvert.mockRejectedValue(new AxiosError('Invalid'));
 
-        const result = await weatherHandler(
+        await weatherHandler(
             partiallyMock<WeatherRequest>({
                 query: { postcode: 'sw1e 1aa' },
                 log: mockLog,
@@ -59,27 +63,27 @@ describe('Lookup routes', () => {
             partiallyMock<FastifyReply>({ code: mockStatus }),
         );
 
-        expect(result).toBe('Unable to use that postcode');
-        expect(mockErrorLog).toHaveBeenCalledWith(error);
-        expect(mockStatus).toBeCalledWith(404);
+        expect(mockLog.error).toHaveBeenCalledWith('Unable to use postcode sw1e 1aa due to Invalid');
+        expect(mockStatus).toBeCalledWith(202);
+        expect(mockSend).toHaveBeenCalledWith({ error: 'Unable to use that postcode' });
     });
 
     it('should get geo position from handler', async () => {
         mockedConvert.mockResolvedValueOnce({ latitude: 4, longitude: 10.9 });
         mockedWeather.mockResolvedValueOnce({
             elevation: 1,
-            date: new Date('2023-05-01'),
+            date: baseDate,
             latLong: { latitude: 1, longitude: 2 },
             name: 'Elysse',
         } as unknown as Weather);
 
-        const result = await weatherHandler(
-            partiallyMock<WeatherRequest>({ query: { postcode: 'sw1e 1aa' } }),
-            partiallyMock<FastifyReply>({ code: mockStatus }),
+        await weatherHandler(
+            partiallyMock<WeatherRequest>({ query: { postcode: 'sw1e 1aa' }, log: mockLog }),
+            partiallyMock<FastifyReply>({ code: mockStatus, send: mockSend }),
         );
 
-        expect(result).toEqual({
-            date: new Date('2023-05-01'),
+        expect(mockSend).toHaveBeenCalledWith({
+            date: baseDate,
             elevation: 1,
             latLong: {
                 latitude: 1,

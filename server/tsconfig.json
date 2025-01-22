@@ -11,16 +11,15 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "checkJs": true,
-        "baseUrl": "./",
+        "baseUrl": "./src",
         "paths": {
-            "@root/*": ["src/*"],
-            "@main/*": ["src/main/*"],
-            "@common/*": ["src/common/*"],
-            "@settings": ["src/settings/index"],
-            "@settings/*": ["src/settings/*"],
-            "@lookups/*": ["src/lookups/*"],
-            "@config/*": ["config/*"]
+            "@root/*": ["*"],
+            "@main/*": ["main/*"],
+            "@common/*": ["common/*"],
+            "@settings": ["settings/index"],
+            "@settings/*": ["settings/*"],
+            "@lookups/*": ["lookups/*"]
         }
     },
-    "include": ["src", "config"]
+    "include": ["src"]
 }

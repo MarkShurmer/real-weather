@@ -19,9 +19,7 @@ const jestConfig: JestConfigWithTsJest = {
     coverageDirectory: 'coverage',
 
     // An array of regexp pattern strings used to skip coverage collection
-    // coveragePathIgnorePatterns: [
-    //   "/node_modules/"
-    // ],
+    coveragePathIgnorePatterns: ['node_modules', '<rootDir>/src/app.ts'],
 
     preset: 'ts-jest',
     setupFilesAfterEnv: ['jest-extended/all'],
@@ -29,19 +27,12 @@ const jestConfig: JestConfigWithTsJest = {
     // Indicates which provider should be used to instrument code for coverage
     coverageProvider: 'v8',
 
-    // A list of reporter names that Jest uses when writing coverage reports
-    // coverageReporters: ['json', 'html'],
-
-    modulePaths: [compilerOptions.baseUrl],
-
-    // An object that configures minimum threshold enforcement for coverage results
-    // coverageThreshold: undefined,
-
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
+    modulePaths: [compilerOptions.baseUrl],
 
     // The glob patterns Jest uses to detect test files
-    testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
+    testMatch: ['<rootDir>/src/**/?(*.)+(spec|test).[tj]s?(x)'],
 };
 
 export default jestConfig;

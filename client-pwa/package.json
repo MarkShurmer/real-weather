@@ -42,6 +42,7 @@
         "jest-environment-jsdom": "^29.5.0",
         "prettier": "^2.8.8",
         "react-jss": "^10.10.0",
+        "recoil-mock": "^0.1.6",
         "rimraf": "^5.0.1",
         "style-loader": "^3.3.2",
         "ts-jest": "^29.1.0",
@@ -60,7 +61,7 @@
         "lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx,json}\"",
         "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
         "test": "jest --watchAll",
-        "test:ci": "jest --coverage --coverageReporters='json-summary'",
+        "test:ci": "jest --coverage",
         "typecheck": "tsc",
         "start": "serve dist"
     }

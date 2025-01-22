@@ -7,7 +7,10 @@ export const postCodeAtom = atom<string>({
     default: '',
 });
 
-export type WeatherState = { type: 'errored'; error: string } | { type: 'succeeded'; weather: Weather };
+export type WeatherState =
+    | { type: 'errored'; error: string }
+    | { type: 'succeeded'; weather: Weather }
+    | { type: 'loading' };
 
 export const weatherState = selector<WeatherState>({
     key: 'weather',

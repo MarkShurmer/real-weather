@@ -1,8 +1,7 @@
 import { Weather } from '@lookups/types';
-import { getDateNow } from '@root/common/date-service';
 
-export const weatherResult: Weather = {
-    date: getDateNow(),
+export const getWeatherResult = (): Weather => ({
+    date: new Date(),
     elevation: 15.0,
     latLong: {
         latitude: 60.749,
@@ -44,10 +43,10 @@ export const weatherResult: Weather = {
             units: 'mph',
         },
     },
-};
+});
 
-export const weatherResultHighVis: Weather = {
-    date: getDateNow(),
+export const getWeatherResultHighVis = (): Weather => ({
+    date: new Date(),
     elevation: 15.0,
     latLong: {
         latitude: 60.749,
@@ -89,4 +88,4 @@ export const weatherResultHighVis: Weather = {
             units: 'mph',
         },
     },
-};
+});

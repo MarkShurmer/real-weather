@@ -16,6 +16,14 @@ export default function CurrentWeather() {
     const weatherInstance = useRecoilValue(weatherState);
     const classes = useWeatherStyles();
 
+    if (weatherInstance.type === 'loading') {
+        return (
+            <section className={classes.container} role="status">
+                <div>Loading...</div>
+            </section>
+        );
+    }
+
     if (weatherInstance.type === 'errored') {
         return (
             <section className={classes.container} role="status">
@@ -29,8 +37,8 @@ export default function CurrentWeather() {
     const report = weatherInstance.weather.report;
 
     return (
-        <section className={classes.container} role="main">
-            <div className={classes.cardMain}>
+        <section className={classes.container}>
+            <div className={classes.cardMain} role="contentinfo">
                 <div className={classes.cardItem}>Temperature</div>
                 <div className={classes.cardItem}>
                     {report.temperature.amount} {DEGREE_SYMBOL}
