@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "target": "ES5",
+        "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "node",
         "lib": ["DOM", "ESNext"],
@@ -15,7 +15,8 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "checkJs": true,
-        "types": ["node", "jest", "@testing-library/jest-dom"],
+        // "types": ["node", "jest", "@testing-library/jest-dom"],
+        "typeRoots": ["node_modules/@types"],
         "baseUrl": "./",
         "paths": {
             "@/*": ["src/*"],
@@ -26,5 +27,6 @@
             "@api/*": ["src/api/*"]
         }
     },
-    "include": ["src", "test-utils"]
+    "include": ["src", "test-utils"],
+    "exclude": ["node_modules"]
 }

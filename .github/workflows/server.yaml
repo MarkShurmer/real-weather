@@ -64,7 +64,7 @@ jobs:
         uses: autoscatto/action-coverage-summary-markdown@v1.0.6
         id: coverage_summary_markdown
         with:
-          summary_file: "server/coverage/coverage-summary.json"
+          summary_file: "server/coverage/coverage-final.json"
           warning_threshold: 65
           good_threshold: 90
           fail_if: true
