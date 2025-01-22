@@ -15,7 +15,6 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "checkJs": true,
-        // "types": ["node", "jest", "@testing-library/jest-dom"],
         "typeRoots": ["node_modules/@types"],
         "baseUrl": "./",
         "paths": {
