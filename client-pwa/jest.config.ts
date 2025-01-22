@@ -14,6 +14,7 @@ const jestConfig: JestConfigWithTsJest = {
         '!**/index.{ts,tsx}',
         '!./src/api/api-contracts.ts',
     ],
+    coverageReporters: ['text', 'json-summary'],
     testEnvironment: 'jsdom',
     transform: {
         '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
