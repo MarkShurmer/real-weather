@@ -17,7 +17,7 @@ const jestConfig: JestConfigWithTsJest = {
 
     // The directory where Jest should output its coverage files
     coverageDirectory: 'coverage',
-    coverageReporters: ['text', 'json'],
+    coverageReporters: [['text', { file: './coverage.txt' }]],
 
     // An array of regexp pattern strings used to skip coverage collection
     coveragePathIgnorePatterns: ['node_modules', '<rootDir>/src/app.ts'],
