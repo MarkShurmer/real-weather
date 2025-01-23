@@ -53,12 +53,12 @@ jobs:
       - name: Run test
         run: yarn test:ci
 
-      # - name: Archive test artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: coverage summary
-      #     path: |
-      #       server/coverage/coverage*.json
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage summary
+          path: |
+            server/coverage/coverage*.json
 
       # - name: Coverage Summary Markdown
       #   uses: autoscatto/action-coverage-summary-markdown@v1.0.7
@@ -76,8 +76,7 @@ jobs:
         uses: fingerprintjs/action-coverage-report-md@v2
         id: coverage
         with:
-          textReportPath: "./coverage/coverage.txt"
-          srcBasePath: "./src"
+          textReportPath: server/coverage/coverage.txt
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
