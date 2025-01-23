@@ -9,7 +9,7 @@ on:
   pull_request: {}
 permissions:
   actions: write
-  contents: read
+  contents: write
 
 env:
   IONOS_USERID: ${{ secrets.IONOS_USERID }}
