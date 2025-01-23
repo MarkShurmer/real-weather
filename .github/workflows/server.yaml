@@ -82,8 +82,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
-          recreate: true
-          path: ${{ steps.coverage.outputs.markdownReport }}
+          message: ${{ steps.coverage.outputs.markdownReport }}
 
       - name: Add coverage report to the job summary
         run: |
