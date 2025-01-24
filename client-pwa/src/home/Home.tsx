@@ -5,6 +5,7 @@ import { postCodeAtom } from '@/weather/weather-atoms';
 import { useHomeStyles } from '@/home/Home.styles';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import Loading from '@/loading/Loading';
 
 export function Home() {
     const [error, setError] = useState('');
@@ -29,7 +30,7 @@ export function Home() {
                 <InputText placeholder="Enter postcode" ref={addrRef} />
                 <Button onClick={loadInfo}>Get weather</Button>
             </div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading />}>
                 <CurrentWeather />
             </Suspense>
 

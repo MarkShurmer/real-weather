@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { partiallyMock } from '@test-utils/test-helpers';
-import { render, screen } from '@test-utils/custom-render';
+import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './ErrorFallback';
 
@@ -11,11 +9,12 @@ const ComponentWithError = () => {
 describe('ErrorFallback', () => {
     beforeEach(() => {
         // Don't clutter the console with expected error text
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     it('should show error fallback when error happens', async () => {
-        global.fetch = partiallyMock<typeof global.fetch>(jest.fn().mockRejectedValue('This is my error'));
+        // global.fetch = partiallyMock<typeof global.fetch>(jest.fn().mockRejectedValue('This is my error'));
 
         render(
             <ErrorBoundary fallback={<ErrorFallback />}>

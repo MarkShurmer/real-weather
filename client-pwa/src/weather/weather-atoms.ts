@@ -12,16 +12,20 @@ export type WeatherState =
     | { type: 'succeeded'; weather: Weather }
     | { type: 'loading' };
 
-export const weatherState = selector<WeatherState>({
+export const weatherSelector = selector<WeatherState>({
     key: 'weather',
     get: async ({ get }) => {
         const postcode = get(postCodeAtom);
+
+        console.log('>>> ', postcode);
 
         if (postcode.length >= 6) {
             const url = new URL(getApiUrl());
             url.search = new URLSearchParams({ postcode }).toString();
 
             const response = await fetch(url);
+
+            console.log(':> ', response);
 
             if (response.status === 200) {
                 const data = (await response.json()) as Weather;

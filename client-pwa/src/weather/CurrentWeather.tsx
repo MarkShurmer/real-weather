@@ -1,9 +1,10 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { weatherState } from './weather-atoms';
+import { weatherSelector } from './weather-atoms';
 import { useWeatherStyles } from '@weather/CurrentWeather.styles';
 import { Visibility } from '@weather/Visibility';
 import { format } from 'date-fns';
+import Loading from '@/loading/Loading';
 
 function formatDate(date: string) {
     const asDate = new Date(date);
@@ -13,20 +14,20 @@ function formatDate(date: string) {
 const DEGREE_SYMBOL = '\u00B0';
 
 export default function CurrentWeather() {
-    const weatherInstance = useRecoilValue(weatherState);
+    const weatherInstance = useRecoilValue(weatherSelector);
     const classes = useWeatherStyles();
 
     if (weatherInstance.type === 'loading') {
         return (
             <section className={classes.container} role="status">
-                <div>Loading...</div>
+                <Loading />
             </section>
         );
     }
 
     if (weatherInstance.type === 'errored') {
         return (
-            <section className={classes.container} role="status">
+            <section className={classes.container} role="alert">
                 <div>Unable to retreive any current weather</div>
                 <div>{weatherInstance.error}</div>
             </section>

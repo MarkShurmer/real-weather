@@ -3,7 +3,7 @@ import { compilerOptions } from './tsconfig.json';
 import type { JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
-    // Automatically clear mock calls, instances, contexts and results before every test
+    preset: 'ts-jest',
     clearMocks: true,
 
     coverageThreshold: {
@@ -17,12 +17,11 @@ const jestConfig: JestConfigWithTsJest = {
 
     // The directory where Jest should output its coverage files
     coverageDirectory: 'coverage',
-    coverageReporters: [['text', { file: './coverage.txt' }]],
+    coverageReporters: [['text', { file: './coverage.txt' }], 'json'],
 
     // An array of regexp pattern strings used to skip coverage collection
     coveragePathIgnorePatterns: ['node_modules', '<rootDir>/src/app.ts'],
 
-    preset: 'ts-jest',
     setupFilesAfterEnv: ['jest-extended/all'],
 
     // Indicates which provider should be used to instrument code for coverage

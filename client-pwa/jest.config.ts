@@ -5,6 +5,15 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 const jestConfig: JestConfigWithTsJest = {
     preset: 'ts-jest',
     clearMocks: true,
+    coverageThreshold: {
+        global: {
+            branches: 90,
+            functions: 90,
+            lines: 90,
+            statements: 90,
+        },
+    },
+    collectCoverage: true,
     collectCoverageFrom: [
         './src/**/*.{js,jsx}',
         './src/**/*.{ts,tsx}',
@@ -14,7 +23,9 @@ const jestConfig: JestConfigWithTsJest = {
         '!**/index.{ts,tsx}',
         '!./src/api/api-contracts.ts',
     ],
-    coverageReporters: ['text', 'json-summary'],
+    coverageDirectory: 'coverage',
+    coverageProvider: 'v8',
+    coverageReporters: [['text', { file: './coverage.txt' }], 'text'],
     testEnvironment: 'jsdom',
     transform: {
         '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
