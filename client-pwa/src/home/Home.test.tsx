@@ -1,26 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@test-utils/custom-render';
 import { Home } from '@/home/Home';
-import { createRecoilMockWrapper } from 'recoil-mock';
-import { weatherSelector } from '@/weather/weather-atoms';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-// const initializeState = ({ set }: MutableSnapshot) => {
-//     set(postCodeAtom, 'sw1a 1ff');
-// };
+jest.mock('@tanstack/react-query');
 
 describe('Home page', () => {
-    // beforeAll(() => {
-    //     global.fetch = partiallyMock<typeof global.fetch>(
-    //         jest.fn().mockResolvedValue({ ok: true, json: jest.fn().mockResolvedValue(mockWeather) }),
-    //     );
-    // });
-
     it('should update postcode', async () => {
-        const { context, wrapper } = createRecoilMockWrapper();
-        context.set(weatherSelector, {
-            type: 'loading',
-        });
-
-        render(<Home />, { wrapper });
+        render(<Home />);
+        console.log('>>> ', screen.debug());
 
         const postCodeInput = screen.getByRole('textbox');
         const cta = screen.getByRole('button');

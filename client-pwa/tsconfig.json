@@ -15,8 +15,8 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "checkJs": true,
-        "typeRoots": ["node_modules/@types"],
         "baseUrl": "./",
+        "typeRoots": ["./node_modules/@types", "./node_modules/@testing-library"],
         "paths": {
             "@/*": ["src/*"],
             "@theming/*": ["src/theming/*"],

@@ -1,10 +1,9 @@
-import React from 'react';
-import { useRecoilValue } from 'recoil';
-import { weatherSelector } from './weather-atoms';
 import { useWeatherStyles } from '@weather/CurrentWeather.styles';
 import { Visibility } from '@weather/Visibility';
 import { format } from 'date-fns';
-import Loading from '@/loading/Loading';
+import { fetchWeather } from '@/api/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Weather } from '@/api/api-contracts';
 
 function formatDate(date: string) {
     const asDate = new Date(date);
@@ -13,68 +12,71 @@ function formatDate(date: string) {
 
 const DEGREE_SYMBOL = '\u00B0';
 
-export default function CurrentWeather() {
-    const weatherInstance = useRecoilValue(weatherSelector);
+export type CurrentWeatherProps = {
+    postcode: string;
+};
+
+// async function fetchData(postcode: string) {
+//     const url = new URL(getApiUrl());
+//     url.search = new URLSearchParams({ postcode }).toString();
+
+//     return (await fetch(url)).json();
+// }
+
+export default function CurrentWeather(props: CurrentWeatherProps) {
     const classes = useWeatherStyles();
+    const { postcode } = props;
+    const { data } = useSuspenseQuery<Weather>({
+        queryKey: ['weather', postcode],
+        queryFn: () => fetchWeather(postcode),
+    });
 
-    if (weatherInstance.type === 'loading') {
-        return (
-            <section className={classes.container} role="status">
-                <Loading />
-            </section>
-        );
-    }
-
-    if (weatherInstance.type === 'errored') {
+    if (!data) {
         return (
             <section className={classes.container} role="alert">
                 <div>Unable to retreive any current weather</div>
-                <div>{weatherInstance.error}</div>
             </section>
         );
     }
-
-    const weather = weatherInstance.weather;
-    const report = weatherInstance.weather.report;
 
     return (
         <section className={classes.container}>
             <div className={classes.cardMain} role="contentinfo">
                 <div className={classes.cardItem}>Temperature</div>
                 <div className={classes.cardItem}>
-                    {report.temperature.amount} {DEGREE_SYMBOL}
-                    {report.temperature.units}
+                    {data.report.temperature.amount} {DEGREE_SYMBOL}
+                    {data.report.temperature.units}
                 </div>
 
                 <div className={classes.cardItem}>Type</div>
-                <div className={classes.cardItem}>{report.weatherType}</div>
+                <div className={classes.cardItem}>{data.report.weatherType}</div>
 
                 <div className={classes.cardItem}>Location</div>
-                <div className={classes.cardItem}>{weather.name}</div>
+                <div className={classes.cardItem}>{data.name}</div>
 
                 <div className={classes.cardItem}>Visibility</div>
                 <div className={classes.cardItem}>
-                    <Visibility visibility={report.visibility} />
+                    <Visibility visibility={data.report.visibility} />
                 </div>
 
                 <div className={classes.cardItem}>Time</div>
-                <div className={classes.cardItem}>{formatDate(weather.date)}</div>
+                <div className={classes.cardItem}>{formatDate(data.date)}</div>
 
                 <div className={classes.cardItem}>Pressure</div>
                 <div className={classes.cardItem}>
-                    {weather.report.pressure.amount} {weather.report.pressure.units}
+                    {data.report.pressure.amount} {data.report.pressure.units}
                 </div>
 
                 <div className={classes.cardItem}>Humidity</div>
                 <div className={classes.cardItem}>
-                    {weather.report.humidity.amount} {weather.report.humidity.units}
+                    {data.report.humidity.amount} {data.report.humidity.units}
                 </div>
 
                 <div className={classes.cardItem}>Wind</div>
                 <div className={classes.cardItem}>
-                    {weather.report.windDirection} {', '}
-                    {weather.report.windSpeed.amount} {weather.report.windSpeed.units} {' to '}
-                    {weather.report.windGust.amount} {weather.report.windGust.units}
+                    {data.report.windDirection} {', '}
+                    {data.report.windSpeed.amount} {data.report.windSpeed.units} {' to '}
+                    {data.report.windGust.amount} {data.report.windGust.units}
                 </div>
             </div>
         </section>

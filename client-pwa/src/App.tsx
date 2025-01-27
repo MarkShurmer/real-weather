@@ -1,8 +1,7 @@
-import React from 'react';
-import './App.css';
 import { Home } from '@home/Home';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './error/ErrorFallback';
+import './App.css';
 
 function App() {
     return (

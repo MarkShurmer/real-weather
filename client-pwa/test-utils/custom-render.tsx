@@ -1,18 +1,19 @@
-import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
-import { RecoilRoot } from 'recoil';
-import { RecoilInitatior } from './test-helpers';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactElement } from 'react';
 
-const providerWrapper = (initRecoilState?: RecoilInitatior) => {
-    const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-        return <RecoilRoot initializeState={initRecoilState}>{children}</RecoilRoot>;
-    };
+const queryClient = new QueryClient();
 
-    return AllTheProviders;
+const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
-const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>, initRecoilState?: RecoilInitatior) =>
-    render(ui, { wrapper: providerWrapper(initRecoilState), ...options });
+// const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+//     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+// };
+
+const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
+    render(ui, { wrapper: AllTheProviders, ...options });
 
 export * from '@testing-library/react';
 export { customRender as render };

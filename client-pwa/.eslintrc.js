@@ -1,4 +1,7 @@
+import pluginQuery from '@tanstack/eslint-plugin-query';
+
 module.exports = {
+    ...pluginQuery.configs['flat/recommended'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaVersion: 2020,

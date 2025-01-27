@@ -29,10 +29,10 @@ const jestConfig: JestConfigWithTsJest = {
     testEnvironment: 'jsdom',
     transform: {
         '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
-        '.(css|less)$': '<rootDir>/test-utils/styleMock.js',
+        '^.+\\.css$': 'jest-transform-css',
     },
     roots: ['<rootDir>'],
-    modulePaths: [compilerOptions.baseUrl], // <-- This will be set to 'baseUrl' value
+    modulePaths: [compilerOptions.baseUrl],
     moduleNameMapper: {
         ...pathsToModuleNameMapper(compilerOptions.paths /*, { prefix: '<rootDir>/' } */),
         '^recoil$': 'recoil-mock',
