@@ -4,25 +4,22 @@
       "path": ".github"
     },
     {
-      "path": "client-pwa"
-    },
-    {
       "path": ".husky"
     },
     {
       "path": "server"
+    },
+    {
+      "path": "client"
+    },
+    {
+      "path": "client-pwa_old"
     }
   ],
   "settings": {
-    "jest.disabledWorkspaceFolders": [
-      "docs",
-      ".github",
-      ".husky",
-      "server-lambda",
-      "back-end"
-    ],
+    "jest.disabledWorkspaceFolders": ["docs", ".github", ".husky"],
     "js/ts.implicitProjectConfig.checkJs": true,
-    "jest.showCoverageOnLoad": true,
+    "jest.runMode": "watch",
     "jest.jestCommandLine": "yarn test",
     "typescript.suggestionActions.enabled": true,
     "javascript.suggestionActions.enabled": true

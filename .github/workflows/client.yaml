@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: client-pwa
+        working-directory: client
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-verify
       cancel-in-progress: true
@@ -39,9 +39,9 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.5.0
+          node-version-file: ".nvmrc"
           cache: "yarn"
-          cache-dependency-path: client-pwa/yarn.lock
+          cache-dependency-path: client/yarn.lock
 
       # - name: Run install
       #   run: yarn install --frozen-lockfile

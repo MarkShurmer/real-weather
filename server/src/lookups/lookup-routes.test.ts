@@ -64,7 +64,7 @@ describe('Lookup routes', () => {
         );
 
         expect(mockLog.error).toHaveBeenCalledWith('Unable to use postcode sw1e 1aa due to Invalid');
-        expect(mockStatus).toBeCalledWith(202);
+        expect(mockStatus).toBeCalledWith(502);
         expect(mockSend).toHaveBeenCalledWith({ error: 'Unable to use that postcode' });
     });
 

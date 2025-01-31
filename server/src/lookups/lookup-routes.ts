@@ -13,7 +13,7 @@ export async function weatherHandler(request: WeatherRequest, reply: FastifyRepl
         latLong = await convertPostcodeToGps(postcode);
     } catch (err) {
         request.log.error(`Unable to use postcode ${postcode} due to ${(err as Error).message}`);
-        return reply.code(202).send({ error: 'Unable to use that postcode' });
+        return reply.code(502).send({ error: 'Unable to use that postcode' });
     }
 
     // if (!latLong.latitude || !latLong.longitude) {
