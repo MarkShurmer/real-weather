@@ -1,11 +1,11 @@
-name: 🚀 ClientPWA
+name: 🚀 Client
 on:
   push:
     branches:
       - main
     paths:
-      - "client-pwa/**"
-      - ".github/workflows/client-pwa.yaml"
+      - "client/**"
+      - ".github/workflows/client.yaml"
   pull_request: {}
 
 permissions:
@@ -56,18 +56,18 @@ jobs:
         run: yarn test:ci
 
       - name: Archive test artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage summary
           path: |
-            client-pwa/coverage/coverage*.*
-            client-pwa/coverage/index.html
+            client/coverage/coverage*.*
+            client/coverage/index.html
 
       - name: Prepare coverage report in markdown
         uses: fingerprintjs/action-coverage-report-md@v2
         id: coverage
         with:
-          textReportPath: client-pwa/coverage/coverage.txt
+          textReportPath: client/coverage/coverage.txt
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -86,7 +86,7 @@ jobs:
     needs: [verify]
     defaults:
       run:
-        working-directory: client-pwa
+        working-directory: client
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: true
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: client-pwa
+        working-directory: client
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-deploy
       cancel-in-progress: true

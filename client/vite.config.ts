@@ -17,10 +17,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    sourceMap: true,
     setupFiles: './test-utils/vitest.setup.ts',
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/*.ts?'],
+      exclude: ['src/*.ts?', '**/*-types.ts'],
     },
   },
 } as UserConfigExport);

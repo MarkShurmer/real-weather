@@ -23,18 +23,17 @@
 
 .cta {
   width: 200px;
-  margin: 10 50 10 50;
+  margin: 10 50;
 }
 
 .errorPanel {
-  /* display: (props: HomeStyleProps) => (props.isError ? 'flex' : 'none'); */
   border-radius: 7.5px;
   padding: 15px;
-  background-color: #ff3333;
+  background-color: #f33;
 }
 
 .errorText {
-  color: #ffffff;
+  color: #fff;
   opacity: 0.7;
   /* padding: 15px; */
 }

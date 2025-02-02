@@ -34,7 +34,6 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
     if (postcode) {
       fetchWeather(postcode)
         .then((data) => {
-          console.log('>>> ', data);
           setData(data);
         })
         .catch((error) => {

@@ -15,7 +15,7 @@
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
     "vitest": "vitest run",
     "test": "vitest",
-    "test:ci": "yarn typecheck && yarn prettier && yarn lint && yarn vitest",
+    "test:ci": "yarn typecheck && yarn prettier && yarn lint && yarn vitest --coverage",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
   },

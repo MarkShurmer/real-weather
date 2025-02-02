@@ -23,9 +23,9 @@ export function HomePage() {
 
   return (
     <>
-      <Container size="xs">
+      <Container size="xs" role="main">
         <h1>Current weather</h1>
-        <section className={classes.contentView} data-testid="home">
+        <section className={classes.contentView}>
           <div className={classes.buttonsContainer} role="search">
             <TextInput
               type="text"
