@@ -1,5 +1,6 @@
 import { createFetchResponse } from '@test-utils';
 import { partialMock } from 'partial-mock';
+import { describe, expect, it, vi } from 'vitest';
 import { mockWeather } from '@/Weather/__mocks__/weather-mocks';
 import { fetchWeather } from './api';
 

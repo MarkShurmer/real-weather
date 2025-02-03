@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { checkPostcode } from './postcode-checker';
 
 describe('Postcode checker', () => {

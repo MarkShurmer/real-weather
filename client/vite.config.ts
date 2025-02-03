@@ -1,24 +1,13 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfigExport } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { UserConfigExport } from 'vitest/config';
+import type { ViteUserConfig as VitestUserConfigInterface } from 'vitest/config';
 
-const config: UserConfigExport = defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
-    }),
-  ],
+type ViteConfig = UserConfigExport & Pick<VitestUserConfigInterface, 'test'>;
+const vitestConfig: ViteConfig = {
   test: {
-    globals: true,
     environment: 'jsdom',
-    sourceMap: true,
     setupFiles: './test-utils/vitest.setup.ts',
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
@@ -34,6 +23,20 @@ const config: UserConfigExport = defineConfig({
       },
     },
   },
-});
+};
 
-export default config;
+const config: ViteConfig = {
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
+    }),
+  ],
+  test: vitestConfig.test,
+};
+
+export default defineConfig(config);

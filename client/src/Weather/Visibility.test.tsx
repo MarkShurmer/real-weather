@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { Visibility } from '@/Weather/Visibility';
 
 describe('Visibility component', () => {

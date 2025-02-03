@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 
-import { vi } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import { afterEach, vi } from 'vitest';
 
 const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
@@ -29,3 +30,7 @@ class ResizeObserver {
 window.ResizeObserver = ResizeObserver;
 
 window.fetch = vi.fn();
+
+afterEach(() => {
+  cleanup();
+});

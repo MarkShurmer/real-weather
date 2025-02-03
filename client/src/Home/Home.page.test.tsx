@@ -1,4 +1,5 @@
 import { render, screen, userEvent } from '@test-utils';
+import { describe, expect, it, vi } from 'vitest';
 import { fetchWeather } from '@/api/api';
 import { mockWeather } from '@/Weather/__mocks__/weather-mocks';
 import { HomePage } from './Home.page';
