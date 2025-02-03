@@ -10,6 +10,7 @@ on:
 permissions:
   actions: write
   contents: read
+  pull-requests: write
 
 env:
   IONOS_USERID: ${{ secrets.IONOS_USERID }}
@@ -54,23 +55,28 @@ jobs:
         run: yarn test:ci
 
       - name: Archive test artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage summary
           path: |
-            server/coverage/coverage*.json
+            server/coverage/coverage*.*
 
-      - name: Coverage Summary Markdown
-        uses: autoscatto/action-coverage-summary-markdown@v1.0.6
-        id: coverage_summary_markdown
+      - name: Prepare coverage report in markdown
+        uses: fingerprintjs/action-coverage-report-md@v2
+        id: coverage
         with:
-          summary_file: "server/coverage/coverage-summary.json"
-          warning_threshold: 65
-          good_threshold: 90
-          fail_if: true
+          textReportPath: server/coverage/coverage.txt
 
-      - name: Display summary
-        run: echo "${{steps.coverage_summary_markdown.outputs.lines}}" >> $GITHUB_STEP_SUMMARY
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          message: ${{ steps.coverage.outputs.markdownReport }}
+
+      - name: Add coverage report to the job summary
+        run: |
+          echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
 
   build:
     runs-on: ubuntu-latest

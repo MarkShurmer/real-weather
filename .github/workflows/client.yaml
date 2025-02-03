@@ -1,0 +1,143 @@
+name: 🚀 Client
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "client/**"
+      - ".github/workflows/client.yaml"
+  pull_request: {}
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: write
+
+env:
+  IONOS_USERID: ${{ secrets.IONOS_USERID }}
+  IONOS_PW: ${{ secrets.IONOS_PW }}
+  IONOS_URL: ${{ secrets.IONOS_URL }}
+  DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+  BUILD_NUMBER: 2
+
+jobs:
+  verify:
+    name: ⬣ Verify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-verify
+      cancel-in-progress: true
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: "client/.nvmrc"
+          cache: "yarn"
+          cache-dependency-path: client/yarn.lock
+
+      - name: Run install
+        run: yarn install --frozen-lockfile
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Run typecheck
+        run: yarn typecheck
+
+      - name: Run test
+        run: yarn test:ci
+
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage summary
+          path: |
+            client/coverage/coverage*.*
+            client/coverage/index.html
+
+      - name: Prepare coverage report in markdown
+        uses: fingerprintjs/action-coverage-report-md@v2
+        id: coverage
+        with:
+          textReportPath: client/coverage/coverage.txt
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          message: ${{ steps.coverage.outputs.markdownReport }}
+
+      - name: Add coverage report to the job summary
+        run: |
+          echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
+
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
+    needs: [verify]
+    defaults:
+      run:
+        working-directory: client
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build
+      cancel-in-progress: true
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u  ${{ env.DOCKER_USERID }} -p  ${{ env.DOCKER_TOKEN }}
+      - name: Build docker
+        run: docker build . --progress plain -t ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+      - name: Push docker image
+        run: docker push ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+
+  deploy:
+    name: ⬣ Deploy
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      cancel-in-progress: true
+
+    steps:
+      # - name: copy file via ssh
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ env.IONOS_URL }}
+      #     username: ${{ env.IONOS_USERID }}
+      #     password: ${{ env.IONOS_PW }}
+      #     source: "docker-compose.yml"
+      #     target: /real-weather
+      - name: Restart the services using new images
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ env.IONOS_URL }}
+          username: ${{ env.IONOS_USERID }}
+          password: ${{ env.IONOS_PW }}
+          script: |
+            docker kill real-weather-client || true
+            docker system prune -f || true
+            docker network create real-weather || true
+            docker kill real-weather-client || true
+            docker run --name real-weather-client -d -p 80:80 --network=real-weather ${{ env.DOCKER_USERID }}/real-weather-client:${{ env.BUILD_NUMBER }}
+
+      # - name: deploy to s3
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #       aws-region: eu-west-2
+      # - run: aws s3 sync ./dist s3://real-weather

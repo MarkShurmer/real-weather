@@ -99,6 +99,7 @@ export function mapWeatherData(response: WeatherResponse) {
 
 export async function getWeatherFromStation(refPoint: GPS) {
     const settings = await getSettings();
+
     const sitesResponse = await axios.get<ObseervableSiteResponse>(Observations_Sites_Url, {
         params: {
             key: settings.apiKey,

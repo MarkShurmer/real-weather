@@ -4,10 +4,10 @@ export function toPascalCase(s: string) {
     });
 }
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
-    Object.assign({}, state, changes);
+// export const applyChanges = <S, K extends keyof S>(state: S, changes: Pick<S, K>): S =>
+//     Object.assign({}, state, changes);
 
 /** Simple mocking inspired by https://www.npmjs.com/package/jest-mock-extended
  * which has mockDeep<T>() for excellent autocompletion support but had other issues. */

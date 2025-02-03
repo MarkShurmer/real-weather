@@ -7,13 +7,13 @@
         "@fastify/cors": "^8.3.0",
         "@fastify/helmet": "^10.1.1",
         "axios": "^1.4.0",
+        "dotenv-flow": "^4.1.0",
         "fastify": "^4.18.0",
         "geolib": "^3.3.4",
         "pino-pretty": "^10.0.0",
         "tsconfig-paths": "^4.2.0"
     },
     "devDependencies": {
-        "@types/got": "^9.6.12",
         "@types/jest": "^29.5.2",
         "@types/node": "^20.3.1",
         "@types/uuid": "^9.0.2",
@@ -35,7 +35,7 @@
     "scripts": {
         "dev": "nodemon -r tsconfig-paths/register src/index.ts",
         "test": "jest --watch",
-        "test:ci": "jest --coverage --coverageReporters='json-summary'",
+        "test:ci": "jest --coverage",
         "lint": "eslint . --fix",
         "typecheck": "tsc",
         "build": "tsc --project tsconfig-build.json && tsconfig-replace-paths --project tsconfig-build.json",

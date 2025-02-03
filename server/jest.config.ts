@@ -3,7 +3,7 @@ import { compilerOptions } from './tsconfig.json';
 import type { JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
-    // Automatically clear mock calls, instances, contexts and results before every test
+    preset: 'ts-jest',
     clearMocks: true,
 
     coverageThreshold: {
@@ -17,31 +17,22 @@ const jestConfig: JestConfigWithTsJest = {
 
     // The directory where Jest should output its coverage files
     coverageDirectory: 'coverage',
+    coverageReporters: [['text', { file: './coverage.txt' }], 'json'],
 
     // An array of regexp pattern strings used to skip coverage collection
-    // coveragePathIgnorePatterns: [
-    //   "/node_modules/"
-    // ],
+    coveragePathIgnorePatterns: ['node_modules', '<rootDir>/src/app.ts'],
 
-    preset: 'ts-jest',
     setupFilesAfterEnv: ['jest-extended/all'],
 
     // Indicates which provider should be used to instrument code for coverage
     coverageProvider: 'v8',
 
-    // A list of reporter names that Jest uses when writing coverage reports
-    // coverageReporters: ['json', 'html'],
-
-    modulePaths: [compilerOptions.baseUrl],
-
-    // An object that configures minimum threshold enforcement for coverage results
-    // coverageThreshold: undefined,
-
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
+    modulePaths: [compilerOptions.baseUrl],
 
     // The glob patterns Jest uses to detect test files
-    testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
+    testMatch: ['<rootDir>/src/**/?(*.)+(spec|test).[tj]s?(x)'],
 };
 
 export default jestConfig;

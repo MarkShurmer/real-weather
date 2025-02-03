@@ -1,30 +1,19 @@
 import { convertPostcodeToGps, getWeatherFromStation } from '@lookups/lookup-service';
 import { weatherSites } from './__mocks__/waether-sites';
-import {
-    weatherObsExcellentVisibility,
-    weatherObsGoodVisibility,
-    weatherObsModerateVisibility,
-    weatherObsNoParam,
-    weatherObsPoorVisibility,
-    weatherObsUnknownVisibility,
-    weatherObsVeryGoodVisibility,
-    weatherObsVeryPoorVisibility,
-    weatherObservation,
-} from './__mocks__/weather-observations';
+import { getObservation, ObservationTypes } from './__mocks__/weather-observations';
 import { Observations_Sites_Url, Observations_Url, Postcode_Info_Url } from '@common/constants';
-import { weatherResult, weatherResultHighVis } from './__mocks__/weather-result';
+import { getWeatherResult, getWeatherResultHighVis } from './__mocks__/weather-result';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
-jest.mock('@common/date-service', () => ({
-    getDateNow: jest.fn().mockReturnValue(new Date()),
-}));
-
 describe('Lookup service', () => {
     let axiosMock: MockAdapter;
+    let baseDate: Date;
 
     beforeAll(() => {
+        baseDate = new Date();
         axiosMock = new MockAdapter(axios);
+        jest.useFakeTimers({ now: baseDate });
     });
 
     describe('convertPostcodeToGps', () => {
@@ -46,41 +35,51 @@ describe('Lookup service', () => {
     });
 
     describe('getWeatherFromStation', () => {
+        beforeEach(() => {
+            jest.useFakeTimers({ now: baseDate });
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
         const surreySiteUrl = Observations_Url.replace(':locationId', '3781');
 
         it('get obs for nearest site to edinburgh', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(Observations_Url.replace(':locationId', '3066')).replyOnce(200, weatherObservation);
+            axiosMock
+                .onGet(Observations_Url.replace(':locationId', '3066'))
+                .replyOnce(200, getObservation(ObservationTypes.Observation));
 
             const result = await getWeatherFromStation({
                 longitude: -3.188526044893534, // edinburgh
                 latitude: 55.954197513164644,
             });
 
-            expect(result).toEqual(weatherResult);
+            expect(result).toEqual(getWeatherResult());
         });
 
         it('get obs for nearest site to surbiton', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObservation);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.Observation));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
-            expect(result).toEqual(weatherResult);
+            expect(result).toEqual(getWeatherResult());
         });
 
         it('should get obs for unknown visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsUnknownVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsUnknownVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 0;
             expectedResult.report.visibility.to = 0;
             expect(result).toEqual(expectedResult);
@@ -88,14 +87,14 @@ describe('Lookup service', () => {
 
         it('should get obs for very poor visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsVeryPoorVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsVeryPoorVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 0;
             expectedResult.report.visibility.to = 1;
             expect(result).toEqual(expectedResult);
@@ -103,14 +102,14 @@ describe('Lookup service', () => {
 
         it('should get obs for poor visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsPoorVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsPoorVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 1;
             expectedResult.report.visibility.to = 4;
             expect(result).toEqual(expectedResult);
@@ -118,14 +117,14 @@ describe('Lookup service', () => {
 
         it('should get obs for moderate visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsModerateVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsModerateVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 4;
             expectedResult.report.visibility.to = 10;
             expect(result).toEqual(expectedResult);
@@ -133,14 +132,14 @@ describe('Lookup service', () => {
 
         it('should get obs for good visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsGoodVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsGoodVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 10;
             expectedResult.report.visibility.to = 20;
             expect(result).toEqual(expectedResult);
@@ -148,14 +147,14 @@ describe('Lookup service', () => {
 
         it('should get obs for very good visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsVeryGoodVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsVeryGoodVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 20;
             expectedResult.report.visibility.to = 40;
             expect(result).toEqual(expectedResult);
@@ -163,14 +162,14 @@ describe('Lookup service', () => {
 
         it('should get obs for excellent visibility', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsExcellentVisibility);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsExcellentVisibility));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            const expectedResult = { ...weatherResult };
+            const expectedResult = { ...getWeatherResult() };
             expectedResult.report.visibility.from = 40;
             expectedResult.report.visibility.to = 100;
             expect(result).toEqual(expectedResult);
@@ -178,14 +177,14 @@ describe('Lookup service', () => {
 
         it('should get obs even when params not set', async () => {
             axiosMock.onGet(Observations_Sites_Url).replyOnce(200, weatherSites);
-            axiosMock.onGet(surreySiteUrl).replyOnce(200, weatherObsNoParam);
+            axiosMock.onGet(surreySiteUrl).replyOnce(200, getObservation(ObservationTypes.ObsNoParam));
 
             const result = await getWeatherFromStation({
                 longitude: -0.3037457177660413, // surbiton ,
                 latitude: 51.39281460811332,
             });
 
-            expect(result).toEqual(weatherResultHighVis);
+            expect(result).toEqual(getWeatherResultHighVis());
         });
 
         it('should error when api call fails', async () => {

@@ -1,0 +1,15 @@
+.container {
+  min-height: 15rem;
+}
+
+.cardMain {
+  padding: 1rem;
+}
+
+.cardItem {
+  padding: 0.25rem;
+}
+
+.error {
+  color: red;
+}

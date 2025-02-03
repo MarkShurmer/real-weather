@@ -1,0 +1,39 @@
+.contentView {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.buttonsContainer {
+  display: 'flex';
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.subHeader {
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+.cta {
+  width: 200px;
+  margin: 10 50;
+}
+
+.errorPanel {
+  border-radius: 7.5px;
+  padding: 15px;
+  background-color: #f33;
+}
+
+.errorText {
+  color: #fff;
+  opacity: 0.7;
+  /* padding: 15px; */
+}
