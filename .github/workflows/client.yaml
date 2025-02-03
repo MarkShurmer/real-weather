@@ -43,8 +43,8 @@ jobs:
           cache: "yarn"
           cache-dependency-path: client/yarn.lock
 
-      # - name: Run install
-      #   run: yarn install --frozen-lockfile
+      - name: Run install
+        run: yarn install --frozen-lockfile
 
       - name: Run lint
         run: yarn lint
