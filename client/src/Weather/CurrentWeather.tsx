@@ -5,8 +5,8 @@ import { Alert, Paper, SimpleGrid } from '@mantine/core';
 import { fetchWeather } from '@/api/api';
 import type { Weather } from '@/api/api-types';
 import Loading from '@/components/Loading';
-import classes from '@/weather/CurrentWeather.module.css';
 import { Visibility } from '@/Weather/Visibility';
+import classes from './CurrentWeather.module.css';
 
 /*************  ✨ Codeium Command ⭐  *************/
 /**

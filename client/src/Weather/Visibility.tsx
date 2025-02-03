@@ -1,4 +1,3 @@
-import React from 'react';
 import { WeatherRangeVector } from '@/api/api-types';
 
 export type VisibilityProps = {

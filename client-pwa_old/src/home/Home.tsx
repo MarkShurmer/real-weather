@@ -1,9 +1,9 @@
 import { ChangeEvent, Suspense, useCallback, useState } from 'react';
-import CurrentWeather from '@/weather/CurrentWeather';
 import { useHomeStyles } from '@/home/Home.styles';
 import Loading from '@/loading/Loading';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import CurrentWeather from '@/weather/CurrentWeather';
 
 export function Home() {
     const [error, setError] = useState('');
