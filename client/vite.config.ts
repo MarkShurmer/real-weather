@@ -1,9 +1,10 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig, UserConfigExport } from 'vite';
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { UserConfigExport } from 'vitest/config';
 
-export default defineConfig({
+const config: UserConfigExport = defineConfig({
   plugins: [
     react(),
     tsconfigPaths(),
@@ -22,6 +23,7 @@ export default defineConfig({
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/*.ts?', '**/*-types.ts'],
+      reporter: [['text', { file: './coverage.txt' }], 'json'],
       thresholds: {
         global: {
           statements: 80,
@@ -32,4 +34,6 @@ export default defineConfig({
       },
     },
   },
-} as UserConfigExport);
+});
+
+export default config;
