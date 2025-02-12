@@ -4,3 +4,4 @@ coverage
 **/*.log
 .aws-sam
 packaged*.yaml
+.vercel

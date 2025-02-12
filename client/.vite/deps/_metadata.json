@@ -2,7 +2,45 @@
   "hash": "bea108d6",
   "configHash": "3b8232ab",
   "lockfileHash": "6b459809",
-  "browserHash": "9c021ed6",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "7112b134",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "12f30e42",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "083f4587",
+      "needsInterop": true
+    },
+    "@mantine/core": {
+      "src": "../../node_modules/@mantine/core/esm/index.mjs",
+      "file": "@mantine_core.js",
+      "fileHash": "360389e1",
+      "needsInterop": false
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "4b2283f4",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "83de39c6",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-K5LUDHM4": {
+      "file": "chunk-K5LUDHM4.js"
+    },
+    "chunk-6JKWCWVM": {
+      "file": "chunk-6JKWCWVM.js"
+    }
+  }
 }
