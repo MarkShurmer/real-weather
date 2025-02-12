@@ -36,6 +36,10 @@ const config: ViteConfig = {
       },
     }),
   ],
+  server: {
+    host: '0.0.0.0',
+    open: false,
+  },
   test: vitestConfig.test,
 };
 

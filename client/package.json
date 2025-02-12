@@ -13,8 +13,7 @@
     "stylelint": "stylelint '**/*.css' --cache",
     "prettier": "prettier --check \"**/*.{ts,tsx}\"",
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
-    "vitest": "vitest run",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ci": "yarn typecheck && yarn prettier && yarn lint && yarn vitest --coverage",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
