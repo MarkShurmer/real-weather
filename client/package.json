@@ -52,7 +52,6 @@
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.4.2",
-    "prop-types": "^15.8.1",
     "rimraf": "^6.0.1",
     "storybook": "^8.5.0",
     "storybook-dark-mode": "^4.0.2",
@@ -64,6 +63,5 @@
     "vite-plugin-pwa": "^0.21.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.2"
-  },
-  "packageManager": "yarn@4.6.0"
+  }
 }
