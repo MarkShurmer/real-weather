@@ -4,6 +4,7 @@ declare global {
         interface ProcessEnv {
             NODE_ENV?: 'development' | 'test' | 'production';
             PORT?: string;
+            CLIENT_URL: string;
         }
     }
 }
