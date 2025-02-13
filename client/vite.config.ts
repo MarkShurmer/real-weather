@@ -40,6 +40,9 @@ const config: ViteConfig = {
     host: '0.0.0.0',
     open: false,
   },
+  build: {
+    sourcemap: true,
+  },
   test: vitestConfig.test,
 };
 
