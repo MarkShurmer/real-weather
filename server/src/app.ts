@@ -25,8 +25,11 @@ const app = Fastify({
 });
 
 function registerPlugins() {
+    logger.info(`RegisterPlugins - using url ${process.env.CLIENT_URL}`);
     // add our middlewares
-    app.register(cors, { origin: ['http://localhost:5173', 'http://weather.shurms.com'] });
+    app.register(cors, {
+        origin: [process.env.CLIENT_URL ?? 'http://localhost:5173'],
+    });
     app.register(helmet);
 
     // now add our routes
