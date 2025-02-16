@@ -1,4 +1,8 @@
-GET http://localhost:3000/weather?postcode=kt70ny
+
+GET http://localhost:3000/weather?lat=55.7558&lon=1.6176
+###
+
+GET http://localhost:3000/gps?postcode=kt70ny
 
 ###
 

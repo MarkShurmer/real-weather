@@ -2,6 +2,12 @@ import '@testing-library/jest-dom/vitest';
 
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
+
+const fetchMocker = createFetchMock(vi);
+
+// sets globalThis.fetch and globalThis.fetchMock to our mocked version
+fetchMocker.enableMocks();
 
 const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
@@ -29,8 +35,7 @@ class ResizeObserver {
 
 window.ResizeObserver = ResizeObserver;
 
-window.fetch = vi.fn();
-
 afterEach(() => {
   cleanup();
+  fetchMocker.resetMocks();
 });
