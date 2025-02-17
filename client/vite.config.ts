@@ -13,7 +13,7 @@ const vitestConfig: ViteConfig = {
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/*.ts?', '**/*-types.ts'],
-      reporter: [['text', { file: './coverage.txt' }], 'json'],
+      //reporter: [['text', { file: './coverage.txt' }], 'json'],
       reportOnFailure: true,
       thresholds: {
         global: {

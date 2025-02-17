@@ -1,6 +1,9 @@
 import { render, screen, userEvent } from '@test-utils';
 import { describe, expect, it, vi } from 'vitest';
+import { fetchGPSFromPostcode } from '@/api/api';
 import { PostcodePicker } from './PostcodePicker';
+
+vi.mock('@/api/api');
 
 describe('Postcode picker', () => {
   const mockPostcodeChanged = vi.fn();
@@ -37,7 +40,10 @@ describe('Postcode picker', () => {
   });
 
   it('should return a position if postcode entered is valid', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({ latitude: 2, longitude: 4 }));
+    vi.mocked(fetchGPSFromPostcode).mockResolvedValueOnce({
+      status: 'ok',
+      data: { latitude: 2, longitude: 4 },
+    });
 
     render(
       <PostcodePicker
@@ -56,7 +62,10 @@ describe('Postcode picker', () => {
   });
 
   it('should handle API errors gracefully', async () => {
-    fetchMock.mockResponseOnce({}, { status: 502 });
+    vi.mocked(fetchGPSFromPostcode).mockResolvedValueOnce({
+      status: 'error',
+      message: 'Service unavailable',
+    });
 
     render(
       <PostcodePicker

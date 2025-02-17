@@ -7,7 +7,7 @@ import { PostcodePicker } from './PostcodePicker';
 import classes from './Home.module.css';
 
 export function HomePage() {
-  const [position, setPosition] = useState<LatLong | null>(null);
+  const [position, setPosition] = useState<LatLong | undefined>();
   const [isUsingLocation, setIsUsingLocation] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +17,7 @@ export function HomePage() {
 
   const onChangeLocationType = (isUsingLocation: boolean) => {
     setIsUsingLocation(isUsingLocation);
-    setPosition(null);
+    setPosition(undefined);
 
     if (isUsingLocation) {
       if (navigator.geolocation) {
@@ -37,14 +37,14 @@ export function HomePage() {
           {!isUsingLocation && (
             <PostcodePicker
               onPositionChanged={(pos: LatLong) => setPosition(pos)}
-              onPostcodeChanged={() => setPosition(null)}
+              onPostcodeChanged={() => setPosition(undefined)}
             />
           )}
-          {position && (
-            <div>
-              <CurrentWeather latLong={position} />
-            </div>
-          )}
+
+          <div>
+            <CurrentWeather latLong={position} />
+          </div>
+
           {error && (
             <div className={classes.errorPanel} role="alert">
               <div className={classes.errorText}>{error}</div>

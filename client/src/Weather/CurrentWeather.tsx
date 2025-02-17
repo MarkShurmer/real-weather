@@ -21,7 +21,7 @@ function formatDate(date: string) {
 const DEGREE_SYMBOL = '\u00B0';
 
 export type CurrentWeatherProps = {
-  latLong: LatLong;
+  latLong?: LatLong;
 };
 
 export default function CurrentWeather(props: CurrentWeatherProps) {
@@ -31,11 +31,13 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
 
   useEffect(() => {
     async function getWeather() {
-      const response = await fetchWeather(latLong);
-      if (response.status === 'ok') {
-        setData(response.data);
-      } else {
-        setError(response.message);
+      if (latLong) {
+        const response = await fetchWeather(latLong);
+        if (response.status === 'ok') {
+          setData(response.data);
+        } else {
+          setError(response.message);
+        }
       }
     }
 
