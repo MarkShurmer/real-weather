@@ -1,6 +1,6 @@
 import { Observations_Sites_Url, Observations_Url, Postcode_Info_Url } from '@common/constants';
 import {
-    GPS,
+    LatLong,
     LocationWithDistance,
     ObseervableSiteResponse,
     ObservationLocation,
@@ -22,7 +22,7 @@ export async function convertPostcodeToGps(postcode: string) {
     return {
         latitude: response.data.result.latitude,
         longitude: response.data.result.longitude,
-    } as GPS;
+    } as LatLong;
 }
 
 function translateVisibility(visibility: string): WeatherRangeVector {
@@ -97,7 +97,7 @@ export function mapWeatherData(response: WeatherResponse) {
     return mapped;
 }
 
-export async function getWeatherFromStation(refPoint: GPS) {
+export async function getWeatherFromStation(refPoint: LatLong) {
     const settings = await getSettings();
 
     const sitesResponse = await axios.get<ObseervableSiteResponse>(Observations_Sites_Url, {
@@ -121,7 +121,7 @@ export async function getWeatherFromStation(refPoint: GPS) {
     return mapWeatherData(obs.data);
 }
 
-function getNearestSite(sites: ObservationLocation[], refPoint: GPS) {
+function getNearestSite(sites: ObservationLocation[], refPoint: LatLong) {
     return sites.reduce<LocationWithDistance>(
         (accum, curr) => {
             const distance = getDistance(refPoint, {

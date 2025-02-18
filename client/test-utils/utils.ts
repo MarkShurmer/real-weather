@@ -7,3 +7,5 @@ export function createFetchResponse<TData>(data: TData): Response {
     status: 200,
   });
 }
+
+export type GeoLocationCallback = (position: GeolocationPosition) => void;

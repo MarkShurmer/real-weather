@@ -1,4 +1,4 @@
-import { FastifyRequest } from 'fastify';
+import { FastifyRequest, RawServerBase } from 'fastify';
 
 export type PostCodeErrorResponse = {
     status: 404;
@@ -21,7 +21,7 @@ export type PostCodeResponse = {
     result: PostCodeResult;
 };
 
-export type GPS = {
+export type LatLong = {
     latitude: number;
     longitude: number;
 };
@@ -99,11 +99,41 @@ export type WeatherLocation = {
 };
 
 export interface WeatherQueryInterface {
+    lat: number;
+    lon: number;
+}
+
+export interface GPSQueryInterface {
     postcode: string;
 }
+
 export type WeatherRequest = FastifyRequest<{
     Querystring: WeatherQueryInterface;
 }>;
+
+export type GpsRequest = FastifyRequest<{
+    Querystring: GPSQueryInterface;
+}>;
+
+export type WeatherHandlerReplyContent = RawServerBase & {
+    200: Weather;
+    502: { error: string };
+};
+
+export type GpsHandlerReplyContent = RawServerBase & {
+    200: LatLong;
+    502: { error: string };
+};
+
+export type WeatherHandlerType = {
+    Querystring: WeatherQueryInterface;
+    Reply: WeatherHandlerReplyContent;
+};
+
+export type GpsHandlerType = {
+    Querystring: GPSQueryInterface;
+    Reply: GpsHandlerReplyContent;
+};
 
 export const WeatherType: Record<number, string> = {
     0: 'Clear Night',
@@ -193,7 +223,7 @@ export enum CompassPoints {
 export type Weather = {
     locationId: number;
     date: Date;
-    latLong: GPS;
+    latLong: LatLong;
     name: string;
     elevation: number;
     report: WeatherReport;

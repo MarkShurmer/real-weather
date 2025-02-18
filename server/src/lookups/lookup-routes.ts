@@ -1,13 +1,38 @@
 import { Routes } from '@common/routes';
-import type { FastifyInstance, FastifyReply, RawServerBase } from 'fastify';
+import type { FastifyInstance, FastifyReply } from 'fastify';
 import { convertPostcodeToGps, getWeatherFromStation } from '@lookups/lookup-service';
-import { GPS, Weather, WeatherQueryInterface, WeatherRequest } from './types';
+import {
+    GpsHandlerReplyContent,
+    GpsHandlerType,
+    GpsRequest,
+    LatLong,
+    WeatherHandlerReplyContent,
+    WeatherHandlerType,
+    WeatherRequest,
+} from './types';
 
 export async function weatherHandler(request: WeatherRequest, reply: FastifyReply<WeatherHandlerReplyContent>) {
-    const { postcode } = request.query;
-    request.log.info(`Using postcode ${postcode}`);
+    const { lat, lon } = request.query;
+    request.log.info(`Getting weather for latitude ${lat} longitude ${lon}`);
 
-    let latLong: GPS;
+    const latLong = { latitude: lat, longitude: lon } as LatLong;
+    if (latLong.latitude < -90 || latLong.latitude > 90) {
+        request.log.error(`Incorrect latitude of ${latLong.latitude} supplied`);
+        return reply.code(502).send({ error: 'Incorrect latitude supplied' });
+    }
+    if (latLong.longitude < -180 || latLong.longitude > 180) {
+        request.log.error(`Incorrect longitude of ${latLong.longitude} supplied`);
+        return reply.code(502).send({ error: 'Incorrect longitude supplied' });
+    }
+
+    return reply.send(await getWeatherFromStation(latLong));
+}
+
+export async function gpsHandler(request: GpsRequest, reply: FastifyReply<GpsHandlerReplyContent>) {
+    const { postcode } = request.query;
+    request.log.info(`Getting GPS for postcode ${postcode}`);
+
+    let latLong: LatLong;
 
     try {
         latLong = await convertPostcodeToGps(postcode);
@@ -16,31 +41,36 @@ export async function weatherHandler(request: WeatherRequest, reply: FastifyRepl
         return reply.code(502).send({ error: 'Unable to use that postcode' });
     }
 
-    // if (!latLong.latitude || !latLong.longitude) {
-    //     request.log.info('Unable to get lat logs for postcode ' + postcode);
-    //     return reply.code(202).send({ error: 'Unable to get lat long for that postcode' });
-    // }
-
-    return reply.send(await getWeatherFromStation(latLong));
+    return reply.send(latLong);
 }
-
-export type WeatherHandlerReplyContent = RawServerBase & {
-    200: Weather;
-    202: { error: string };
-};
-
-export type WeatherHandlerType = {
-    Querystring: WeatherQueryInterface;
-    Reply: WeatherHandlerReplyContent;
-};
 
 /**
  * Encapsulates the routes
  * @param {FastifyInstance} fastify  Encapsulated Fastify Instance
  */
 export async function lookupRoutes(fastify: FastifyInstance) {
-    await fastify.get<WeatherHandlerType>(
+    fastify.get<WeatherHandlerType>(
         Routes.Weather,
+        {
+            schema: {
+                querystring: {
+                    type: 'object',
+                    properties: {
+                        lat: {
+                            type: 'number',
+                        },
+                        lon: {
+                            type: 'number',
+                        },
+                    },
+                    required: ['lat', 'lon'],
+                },
+            },
+        },
+        weatherHandler,
+    );
+    fastify.get<GpsHandlerType>(
+        Routes.Gps,
         {
             schema: {
                 querystring: {
@@ -53,6 +83,6 @@ export async function lookupRoutes(fastify: FastifyInstance) {
                 },
             },
         },
-        weatherHandler,
+        gpsHandler,
     );
 }

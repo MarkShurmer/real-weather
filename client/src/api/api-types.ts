@@ -1,4 +1,4 @@
-export type GPS = {
+export type LatLong = {
   latitude: number;
   longitude: number;
 };
@@ -133,8 +133,13 @@ export enum CompassPoints {
 export type Weather = {
   locationId: number;
   date: string;
-  latLong: GPS;
+  latLong: LatLong;
   name: string;
   elevation: number;
   report: WeatherReport;
 };
+
+export type GpsApiResponse = { status: 'ok'; data: LatLong } | { status: 'error'; message: string };
+export type WeatherApiResponse =
+  | { status: 'ok'; data: Weather }
+  | { status: 'error'; message: string };
