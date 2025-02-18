@@ -12,7 +12,7 @@ const vitestConfig: ViteConfig = {
     clearMocks: true,
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/*.ts?', '**/*-types.ts'],
+      exclude: ['src/*.ts?', '**/*-types.ts', '**/*.d.ts'],
       //reporter: [['text', { file: './coverage.txt' }], 'json'],
       reportOnFailure: true,
       thresholds: {
