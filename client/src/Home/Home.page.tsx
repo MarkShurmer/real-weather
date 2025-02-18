@@ -15,11 +15,12 @@ export function HomePage() {
     setPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude });
   };
 
-  const onChangeLocationType = (isUsingLocation: boolean) => {
-    setIsUsingLocation(isUsingLocation);
+  const onChangeLocationType = (isUsingLocationService: boolean) => {
+    setIsUsingLocation(isUsingLocationService);
     setPosition(undefined);
+    setError(null);
 
-    if (isUsingLocation) {
+    if (isUsingLocationService) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(updatePosition);
       } else {
@@ -29,29 +30,27 @@ export function HomePage() {
   };
 
   return (
-    <>
-      <Container size="xs" role="main">
-        <h1>Current weather</h1>
-        <section className={classes.contentView}>
-          <LocationChooser onChooseLocationType={onChangeLocationType} />
-          {!isUsingLocation && (
-            <PostcodePicker
-              onPositionChanged={(pos: LatLong) => setPosition(pos)}
-              onPostcodeChanged={() => setPosition(undefined)}
-            />
-          )}
+    <Container size="xs" role="main">
+      <h1>Current weather</h1>
+      <section className={classes.contentView}>
+        <LocationChooser onChooseLocationType={onChangeLocationType} />
+        {!isUsingLocation && (
+          <PostcodePicker
+            onPositionChanged={(pos: LatLong) => setPosition(pos)}
+            onPostcodeChanged={() => setPosition(undefined)}
+          />
+        )}
 
-          <div>
-            <CurrentWeather latLong={position} />
+        <div>
+          <CurrentWeather latLong={position} />
+        </div>
+
+        {error && (
+          <div className={classes.errorPanel} role="alert">
+            <div className={classes.errorText}>{error}</div>
           </div>
-
-          {error && (
-            <div className={classes.errorPanel} role="alert">
-              <div className={classes.errorText}>{error}</div>
-            </div>
-          )}
-        </section>
-      </Container>
-    </>
+        )}
+      </section>
+    </Container>
   );
 }

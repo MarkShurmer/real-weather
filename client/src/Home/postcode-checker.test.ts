@@ -23,12 +23,6 @@ describe('Postcode checker', () => {
     expect(checkPostcode('k33 222')).toBeFalsy();
   });
 
-  it('is invalid for codes with numbers in wrong place', () => {
-    expect(checkPostcode('kt2 33g')).toBeFalsy();
-    expect(checkPostcode('kt2 222')).toBeFalsy();
-    expect(checkPostcode('k33 222')).toBeFalsy();
-  });
-
   it('is invalid for codes with letters in wrong place', () => {
     expect(checkPostcode('kte wgg')).toBeFalsy();
     expect(checkPostcode('k2e pjk')).toBeFalsy();

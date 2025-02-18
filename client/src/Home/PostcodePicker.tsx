@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { Alert, TextInput } from '@mantine/core';
 import { fetchGPSFromPostcode } from '@/api/api';
-import { GPS_API_URL } from '@/api/api-constants';
 import { LatLong } from '@/api/api-types';
 import { Loading } from '@/components/Loading';
 import { checkPostcode } from './postcode-checker';
@@ -24,9 +23,7 @@ export function PostcodePicker(props: PostcodePickerProps) {
 
     if (validatePostCode(e.target.value)) {
       setIsLoading(true);
-      const response = await fetchGPSFromPostcode(
-        `${GPS_API_URL}?postcode=${encodeURIComponent(e.target.value)}`
-      );
+      const response = await fetchGPSFromPostcode(e.target.value);
 
       if (response.status === 'ok') {
         props.onPositionChanged(response.data);

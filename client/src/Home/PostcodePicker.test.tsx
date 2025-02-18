@@ -59,6 +59,7 @@ describe('Postcode picker', () => {
     expect(searchElement).not.toBeNull();
     expect(mockPostcodeChanged).toHaveBeenCalledWith('br2 8bp');
     expect(mockPositionChanged).toHaveBeenCalledWith({ latitude: 2, longitude: 4 });
+    expect(fetchGPSFromPostcode).toHaveBeenCalledWith('br2 8bp');
   });
 
   it('should handle API errors gracefully', async () => {
@@ -79,7 +80,9 @@ describe('Postcode picker', () => {
     const alertElement = await screen.findByRole('alert');
 
     expect(alertElement).toBeInTheDocument();
-    expect(alertElement).toHaveTextContent('There was an error trying to get the GPS location');
+    expect(alertElement).toHaveTextContent(
+      'There was an error trying to get the GPS location for that postcode'
+    );
 
     expect(mockPostcodeChanged).toHaveBeenCalledWith('br2 8bp');
     expect(mockPositionChanged).not.toHaveBeenCalled();

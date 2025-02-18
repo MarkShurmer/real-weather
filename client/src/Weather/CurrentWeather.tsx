@@ -28,16 +28,21 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
   const { latLong } = props;
   const [data, setData] = useState<Weather | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     async function getWeather() {
+      setData(undefined);
       if (latLong) {
+        setIsLoading(true);
         const response = await fetchWeather(latLong);
         if (response.status === 'ok') {
           setData(response.data);
+          setError(undefined);
         } else {
           setError(response.message);
         }
+        setIsLoading(false);
       }
     }
 
@@ -46,7 +51,7 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
 
   if (error) {
     return (
-      <Paper shadow="md" radius="md" withBorder role="contentinfo">
+      <Paper shadow="md" radius="md" withBorder role="contentinfo" className={classes.container}>
         <Alert
           variant="light"
           color="red"
@@ -59,50 +64,56 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
     );
   }
 
-  if (!data) {
+  if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <Paper shadow="md" radius="md" withBorder role="contentinfo">
-      <SimpleGrid cols={2} className={classes.cardMain}>
-        <div className={classes.cardItem}>Temperature</div>
-        <div className={classes.cardItem}>
-          {data.report.temperature.amount} {DEGREE_SYMBOL}
-          {data.report.temperature.units}
-        </div>
+    <Paper shadow="md" radius="md" withBorder role="contentinfo" className={classes.container}>
+      {!data ? (
+        <Alert variant="light" color="blue">
+          No data loaded
+        </Alert>
+      ) : (
+        <SimpleGrid cols={2} className={classes.cardMain}>
+          <div className={classes.cardItem}>Temperature</div>
+          <div className={classes.cardItem}>
+            {data.report.temperature.amount} {DEGREE_SYMBOL}
+            {data.report.temperature.units}
+          </div>
 
-        <div className={classes.cardItem}>Type</div>
-        <div className={classes.cardItem}>{data.report.weatherType}</div>
+          <div className={classes.cardItem}>Type</div>
+          <div className={classes.cardItem}>{data.report.weatherType}</div>
 
-        <div className={classes.cardItem}>Location</div>
-        <div className={classes.cardItem}>{data.name}</div>
+          <div className={classes.cardItem}>Location</div>
+          <div className={classes.cardItem}>{data.name}</div>
 
-        <div className={classes.cardItem}>Visibility</div>
-        <div className={classes.cardItem}>
-          <Visibility visibility={data.report.visibility} />
-        </div>
+          <div className={classes.cardItem}>Visibility</div>
+          <div className={classes.cardItem}>
+            <Visibility visibility={data.report.visibility} />
+          </div>
 
-        <div className={classes.cardItem}>Time</div>
-        <div className={classes.cardItem}>{formatDate(data.date)}</div>
+          <div className={classes.cardItem}>Time</div>
+          <div className={classes.cardItem}>{formatDate(data.date)}</div>
 
-        <div className={classes.cardItem}>Pressure</div>
-        <div className={classes.cardItem}>
-          {data.report.pressure.amount} {data.report.pressure.units}
-        </div>
+          <div className={classes.cardItem}>Pressure</div>
+          <div className={classes.cardItem}>
+            {data.report.pressure.amount} {data.report.pressure.units}
+          </div>
 
-        <div className={classes.cardItem}>Humidity</div>
-        <div className={classes.cardItem}>
-          {data.report.humidity.amount} {data.report.humidity.units}
-        </div>
+          <div className={classes.cardItem}>Humidity</div>
+          <div className={classes.cardItem}>
+            {data.report.humidity.amount} {data.report.humidity.units}
+          </div>
 
-        <div className={classes.cardItem}>Wind</div>
-        <div className={classes.cardItem}>
-          {data.report.windDirection} {', '}
-          {data.report.windSpeed.amount} {data.report.windSpeed.units} {' to '}
-          {data.report.windGust.amount} {data.report.windGust.units}
-        </div>
-      </SimpleGrid>
+          <div className={classes.cardItem}>Wind</div>
+          <div className={classes.cardItem}>
+            {data.report.windDirection} {', '}
+            {data.report.windSpeed.amount} {data.report.windSpeed.units} {' to '}
+            {data.report.windGust.amount} {data.report.windGust.units}
+          </div>
+        </SimpleGrid>
+      )}
     </Paper>
   );
 }

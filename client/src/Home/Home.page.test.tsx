@@ -42,7 +42,6 @@ describe('Home page', () => {
   });
 
   it('should show weather when position changed by geolocation', async () => {
-    //vi.mocked(navigator.geolocation.getCurrentPosition).mockReturnValue({});
     render(<HomePage />);
 
     const selectLocationButton = screen.getByRole('checkbox');
@@ -60,8 +59,7 @@ describe('Home page', () => {
     const selectLocationButton = screen.getByRole('checkbox');
     await userEvent.click(selectLocationButton);
 
-    const errorElement = await screen.findByRole('alert');
-    expect(errorElement).not.toBeNull();
+    expect(screen.getByText('Geolocation is not supported by this browser.')).toBeInTheDocument();
 
     Object.defineProperty(window, 'navigator', { value: { geolocation: oldGeoMock } });
   });

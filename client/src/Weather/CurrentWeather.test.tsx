@@ -8,10 +8,17 @@ vi.mock('@/api/api');
 
 describe('CurrentWeather component', () => {
   it('should give no data message when weather state is loading', async () => {
-    // vi.mocked(fetchWeather).mockResolvedValue({ status: 'ok', data: undefined });
-    render(<CurrentWeather latLong={undefined} />);
+    vi.mocked(fetchWeather).mockResolvedValue({ status: 'ok', data: mockWeather });
+    render(<CurrentWeather latLong={{ latitude: 22, longitude: 43 }} />);
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('should give no data message when no data', async () => {
+    render(<CurrentWeather latLong={undefined} />);
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('No data loaded')).toBeInTheDocument();
   });
 
   it('should show weather section when weather has been set', async () => {
