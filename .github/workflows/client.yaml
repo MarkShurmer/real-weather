@@ -14,12 +14,10 @@ permissions:
   pull-requests: write
 
 env:
-  IONOS_USERID: ${{ secrets.IONOS_USERID }}
-  IONOS_PW: ${{ secrets.IONOS_PW }}
-  IONOS_URL: ${{ secrets.IONOS_URL }}
-  DOCKER_USERID: ${{ secrets.DOCKER_USERID }}
-  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-  BUILD_NUMBER: 2
+  # IONOS_USERID: ${{ secrets.IONOS_USERID }}
+  # IONOS_PW: ${{ secrets.IONOS_PW }}
+  # IONOS_URL: ${{ secrets.IONOS_URL }}
+  VITE_API_URL: http://localhost:3000
 
 jobs:
   verify:
