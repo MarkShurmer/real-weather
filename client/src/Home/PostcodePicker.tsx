@@ -57,7 +57,11 @@ export function PostcodePicker(props: PostcodePickerProps) {
         error={postcodeError}
         onChange={onChangePostcode}
       />
-      {error && <Alert color="red">There was an error trying to get the GPS location</Alert>}
+      {error && (
+        <Alert color="red">
+          There was an error trying to get the GPS location for that postcode
+        </Alert>
+      )}
     </div>
   );
 }
