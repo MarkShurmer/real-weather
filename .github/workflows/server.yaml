@@ -12,11 +12,10 @@ permissions:
   contents: read
   pull-requests: write
 
-env:
+# env:
   # IONOS_USERID: ${{ secrets.IONOS_USERID }}
   # IONOS_PW: ${{ secrets.IONOS_PW }}
   # IONOS_URL: ${{ secrets.IONOS_URL }}
- 
 
 jobs:
   verify:
@@ -76,31 +75,30 @@ jobs:
           echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
 
-  build:
-    runs-on: ubuntu-latest
-    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
-    needs: [verify]
-    defaults:
-      run:
-        working-directory: server
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-build
-      cancel-in-progress: true
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-      - name: Login to docker hub
-        run: docker login -u  ${{ env.DOCKER_USERID }} -p  ${{ env.DOCKER_TOKEN }}
-      - name: Build docker
-        run: docker build . --progress plain -t ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
-      - name: Push docker image
-        run: docker push ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
+  # build:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
+  #   needs: [verify]
+  #   defaults:
+  #     run:
+  #       working-directory: server
+  #   concurrency:
+  #     group: ${{ github.workflow }}-${{ github.ref }}-build
+  #     cancel-in-progress: true
+  #   steps:
+  #     - name: ⬇️ Checkout repo
+  #       uses: actions/checkout@v3
+  #     - name: Login to docker hub
+  #       run: docker login -u  ${{ env.DOCKER_USERID }} -p  ${{ env.DOCKER_TOKEN }}
+  #     - name: Build docker
+  #       run: docker build . --progress plain -t ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
+  #     - name: Push docker image
+  #       run: docker push ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
 
   # deploy:
   #   name: 🐳 Deploy
-  #   # only build/deploy main branch on pushes
-  #   if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
-  #   needs: [verify]
+  #   if: ${{ (github.ref == 'refs/heads/main2' ) && github.event_name == 'push' }}
+  #   needs: [build]
   #   defaults:
   #     run:
   #       working-directory: server
@@ -109,70 +107,25 @@ jobs:
   #     cancel-in-progress: true
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - name: ⬇️ Checkout repo
-  #       uses: actions/checkout@v3
-
-  #     - name: ⎔ Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18.5.0
-  #         cache: "yarn"
-  #         cache-dependency-path: server/yarn.lock
-
-  #     - name: Install dependencies
-  #       run: yarn install --frozen-lockfile
-  #     - name: Build them
-  #       run: yarn build
-  #     - name: Build docker image
-  #       run: docker build . -t real-weather:${GITHUB_RUN_NUMBER}
-  #     - name: Login to docker hub
-  #       run: docker login -u ${DOCKER_USERID}
-  #     # - name: Deploy docker image to repo
-  #     #   run: ssh docker images
-  #     # - name: Deploy docker image to ionos
-  #     #   run: ssh ${IONOS_USERID}@${IONOS_URL}
+  #     # - name: copy file via ssh
+  #     #   uses: appleboy/scp-action@v0.1.4
+  #     #   with:
+  #     #     host: ${{ env.IONOS_URL }}
+  #     #     username: ${{ env.IONOS_USERID }}
+  #     #     password: ${{ env.IONOS_PW }}
+  #     #     source: "docker-compose.yml"
+  #     #     target: /real-weather
   #     - name: Deploy to remote
   #       uses: appleboy/ssh-action@v0.1.10
   #       with:
   #         host: ${{ env.IONOS_URL }}
   #         username: ${{ env.IONOS_USERID }}
   #         password: ${{ env.IONOS_PW }}
-  #         # port: $IONOS_PORT
   #         script: |
-  #           docker build . -t real-weather-server
-  #           ls -al
-
-  deploy:
-    name: 🐳 Deploy
-    if: ${{ (github.ref == 'refs/heads/main' ) && github.event_name == 'push' }}
-    needs: [build]
-    defaults:
-      run:
-        working-directory: server
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-deploy
-      cancel-in-progress: true
-    runs-on: ubuntu-latest
-    steps:
-      # - name: copy file via ssh
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ env.IONOS_URL }}
-      #     username: ${{ env.IONOS_USERID }}
-      #     password: ${{ env.IONOS_PW }}
-      #     source: "docker-compose.yml"
-      #     target: /real-weather
-      - name: Deploy to remote
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ env.IONOS_URL }}
-          username: ${{ env.IONOS_USERID }}
-          password: ${{ env.IONOS_PW }}
-          script: |
-            docker kill real-weather-server || true
-            docker system prune -f || true
-            docker network create real-weather || true
-            docker run --name real-weather-server -d -p 3000:3000 -e API_KEY=${{ env.API_KEY }} -e NODE_ENV=production --network=real-weather ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
+  #           docker kill real-weather-server || true
+  #           docker system prune -f || true
+  #           docker network create real-weather || true
+  #           docker run --name real-weather-server -d -p 3000:3000 -e API_KEY=${{ env.API_KEY }} -e NODE_ENV=production --network=real-weather ${{ env.DOCKER_USERID }}/real-weather-server:${{ env.BUILD_NUMBER }}
 
   # build-and-package:
   #     if: github.ref == 'refs/heads/main'

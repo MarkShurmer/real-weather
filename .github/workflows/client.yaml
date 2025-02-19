@@ -49,6 +49,9 @@ jobs:
 
       - name: Run typecheck
         run: yarn typecheck
+      
+      - name: Run prettier
+        run: yarn prettier
 
       - name: Run test
         run: yarn test:ci
