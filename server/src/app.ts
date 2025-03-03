@@ -5,6 +5,7 @@ import { lookupRoutes } from './lookups/lookup-routes';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import { PinoLoggerOptions } from 'fastify/types/logger';
+import { auth } from './common/helpers';
 
 const envToLogger: Record<string, boolean | (FastifyLoggerOptions<RawServerBase> & PinoLoggerOptions)> = {
     development: {
@@ -31,6 +32,9 @@ function registerPlugins() {
         origin: [process.env.CLIENT_URL ?? 'http://localhost:5173'],
     });
     app.register(helmet);
+
+    // add protection for routes
+    app.addHook('preHandler', auth);
 
     // now add our routes
     app.register(mainRoutes);

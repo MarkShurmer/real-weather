@@ -15,7 +15,9 @@ export function getWeatherUrl(latLong: LatLong): string {
 }
 
 export async function fetchWeather(latLong: LatLong): Promise<WeatherApiResponse> {
-  const response = await fetch(getWeatherUrl(latLong));
+  const response = await fetch(getWeatherUrl(latLong), {
+    headers: { 'x-api-key': import.meta.env.VITE_API_KEY },
+  });
   if (response.status !== 200) {
     const errorMsg = response.status === 502 ? 'Problem with lat long' : 'Service unavailable';
     return { status: 'error', message: errorMsg };
@@ -34,7 +36,10 @@ export async function fetchGPSFromPostcode(postcode: string): Promise<GpsApiResp
   const url = new URL('gps', import.meta.env.VITE_API_URL);
   url.search = new URLSearchParams({ postcode }).toString();
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: { 'x-api-key': import.meta.env.VITE_API_KEY },
+  });
+
   if (response.status !== 200) {
     const errorMsg = response.status === 502 ? 'Unknown postcode' : 'Service unavailable';
     return { status: 'error', message: errorMsg };

@@ -1,5 +1,6 @@
 
 GET http://localhost:3000/weather?lat=55.7558&lon=1.6176
+x-api-key: 5c540b30-099d-4d95-a4d3-ddd3a6b4de48
 ###
 
 GET http://localhost:3000/gps?postcode=kt70ny
