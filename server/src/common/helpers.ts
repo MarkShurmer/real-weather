@@ -1,3 +1,6 @@
+import { getSettings } from '@root/settings';
+import { FastifyReply, FastifyRequest } from 'fastify';
+
 export function toPascalCase(s: string) {
     return s.replace(/(\w)(\w*)/g, function (g0, g1, g2) {
         return g1.toUpperCase() + g2.toLowerCase();
@@ -26,4 +29,15 @@ export type PartialMock<T> = T extends Atomic ? T : PartialMockIndexed<T>;
 /** Utility method for autocompleting a PartialMock<T> and returning it as a T */
 export function partiallyMock<T>(mock: PartialMock<T>) {
     return mock as T;
+}
+
+export async function auth(request: FastifyRequest, reply: FastifyReply) {
+    const apiKey = request.headers['x-api-key'];
+    const knownKey = getSettings().apiKey;
+
+    console.log('>>> ', apiKey, knownKey);
+
+    if (apiKey !== knownKey) {
+        return reply.code(401).send({ error: 'Unauthorized' });
+    }
 }
