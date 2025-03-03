@@ -35,8 +35,6 @@ export async function auth(request: FastifyRequest, reply: FastifyReply) {
     const apiKey = request.headers['x-api-key'];
     const knownKey = getSettings().apiKey;
 
-    console.log('>>> ', apiKey, knownKey);
-
     if (apiKey !== knownKey) {
         return reply.code(401).send({ error: 'Unauthorized' });
     }
