@@ -1,0 +1,8 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 6px;
+  min-height: 15rem;
+}

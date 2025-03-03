@@ -9,10 +9,12 @@ const vitestConfig: ViteConfig = {
   test: {
     environment: 'jsdom',
     setupFiles: './test-utils/vitest.setup.ts',
+    clearMocks: true,
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/*.ts?', '**/*-types.ts'],
+      exclude: ['src/*.ts?', '**/*-types.ts', '**/*.d.ts'],
       reporter: [['text', { file: './coverage.txt' }], 'json'],
+      reportOnFailure: true,
       thresholds: {
         global: {
           statements: 80,
@@ -39,6 +41,9 @@ const config: ViteConfig = {
   server: {
     host: '0.0.0.0',
     open: false,
+  },
+  build: {
+    sourcemap: true,
   },
   test: vitestConfig.test,
 };

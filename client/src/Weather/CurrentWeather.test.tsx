@@ -8,24 +8,33 @@ vi.mock('@/api/api');
 
 describe('CurrentWeather component', () => {
   it('should give no data message when weather state is loading', async () => {
-    render(<CurrentWeather postcode={undefined} />);
+    vi.mocked(fetchWeather).mockResolvedValue({ status: 'ok', data: mockWeather });
+    render(<CurrentWeather latLong={{ latitude: 22, longitude: 43 }} />);
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
+  it('should give no data message when no data', async () => {
+    render(<CurrentWeather latLong={undefined} />);
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('No data loaded')).toBeInTheDocument();
+  });
+
   it('should show weather section when weather has been set', async () => {
-    vi.mocked(fetchWeather).mockResolvedValueOnce(mockWeather);
-    render(<CurrentWeather postcode="br2 8pp" />);
+    vi.mocked(fetchWeather).mockResolvedValue({ status: 'ok', data: mockWeather });
+
+    render(<CurrentWeather latLong={{ latitude: 2, longitude: 4 }} />);
 
     const element = await screen.findByRole('contentinfo');
-
     expect(element).not.toBeNull();
+    expect(screen.getByText('Temperature')).toBeInTheDocument();
   });
 
   it('should give error when api call fails', async () => {
-    vi.mocked(fetchWeather).mockRejectedValueOnce(new Error('Service unavailable'));
+    vi.mocked(fetchWeather).mockResolvedValue({ status: 'error', message: 'Service unavailable' });
 
-    render(<CurrentWeather postcode="br2 8pq" />);
+    render(<CurrentWeather latLong={{ latitude: 2, longitude: 4 }} />);
 
     const element = await screen.findByRole('alert');
     expect(element).not.toBeNull();

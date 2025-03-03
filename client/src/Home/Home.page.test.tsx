@@ -1,43 +1,66 @@
 import { render, screen, userEvent } from '@test-utils';
-import { describe, expect, it, vi } from 'vitest';
-import { fetchWeather } from '@/api/api';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { fetchGPSFromPostcode, fetchWeather } from '@/api/api';
 import { mockWeather } from '@/Weather/__mocks__/weather-mocks';
 import { HomePage } from './Home.page';
 
 vi.mock('@/api/api');
 
 describe('Home page', () => {
-  it('should show main content', () => {
-    render(<HomePage />);
-
-    expect(screen.getByRole('main')).toBeInTheDocument();
+  beforeAll(() => {
+    vi.mocked(fetchWeather).mockResolvedValue({ status: 'ok', data: mockWeather });
+    vi.mocked(fetchGPSFromPostcode).mockResolvedValue({
+      status: 'ok',
+      data: { latitude: 2, longitude: 4 },
+    });
   });
 
-  it('should show an error if postcode entered is too short', async () => {
+  it('should show postcode when location service is off', () => {
     render(<HomePage />);
 
-    const searchBox = screen.getByPlaceholderText('Enter postcode');
-    await userEvent.type(searchBox, 'br2');
-
-    expect(screen.getByText('The post code needs to be a valid UK postcode')).toBeInTheDocument();
+    expect(screen.getByRole('search')).toBeInTheDocument();
   });
 
-  it('should show an error if postcode entered is wrong format', async () => {
+  it('should not show postcode search when location service is on', async () => {
     render(<HomePage />);
 
-    const searchBox = screen.getByPlaceholderText('Enter postcode');
-    await userEvent.type(searchBox, 'br2 grt');
+    const selectLocationButton = screen.getByRole('checkbox');
+    await userEvent.click(selectLocationButton);
+    const searchElement = await screen.queryByRole('search');
 
-    expect(screen.getByText('The post code needs to be a valid UK postcode')).toBeInTheDocument();
+    expect(searchElement).toBeNull();
   });
 
-  it('should show current weather panel if postcode entered is valid', async () => {
-    vi.mocked(fetchWeather).mockResolvedValueOnce(mockWeather);
+  it('should show weather when position changed by postcode', async () => {
     render(<HomePage />);
 
     const searchBox = screen.getByPlaceholderText('Enter postcode');
     await userEvent.type(searchBox, 'br2 8bp');
 
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    const weatherElement = await screen.findByRole('contentinfo');
+    expect(weatherElement).not.toBeNull();
+  });
+
+  it('should show weather when position changed by geolocation', async () => {
+    render(<HomePage />);
+
+    const selectLocationButton = screen.getByRole('checkbox');
+    await userEvent.click(selectLocationButton);
+
+    const weatherElement = await screen.findByRole('contentinfo');
+    expect(weatherElement).not.toBeNull();
+  });
+
+  it('should show error when trying to use geolocation in unsupported browser', async () => {
+    const oldGeoMock = navigator.geolocation;
+    Object.defineProperty(window, 'navigator', { value: { geolocation: undefined } });
+    render(<HomePage />);
+
+    const selectLocationButton = screen.getByRole('checkbox');
+    await userEvent.click(selectLocationButton);
+
+    expect(screen.getByText('Geolocation is not supported by this browser.')).toBeInTheDocument();
+
+    Object.defineProperty(window, 'navigator', { value: { geolocation: oldGeoMock } });
   });
 });

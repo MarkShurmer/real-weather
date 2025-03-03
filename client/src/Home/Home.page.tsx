@@ -1,53 +1,56 @@
-import { ChangeEvent, useState } from 'react';
-import { Container, TextInput } from '@mantine/core';
+import { useState } from 'react';
+import { Container } from '@mantine/core';
+import { LatLong } from '@/api/api-types';
 import CurrentWeather from '@/Weather/CurrentWeather';
-import { checkPostcode } from './postcode-checker';
+import { LocationChooser } from './LocationChooser';
+import { PostcodePicker } from './PostcodePicker';
 import classes from './Home.module.css';
 
 export function HomePage() {
+  const [position, setPosition] = useState<LatLong | undefined>();
+  const [isUsingLocation, setIsUsingLocation] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [postcode, setPostcode] = useState<string>('');
 
-  const onChangePostcode = (e: ChangeEvent<HTMLInputElement>) => {
-    setPostcode(e.target.value);
-    validatePostCode(e.target.value);
+  const updatePosition = (position: GeolocationPosition) => {
+    setPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude });
   };
 
-  const validatePostCode = (postCode: string) => {
-    if (checkPostcode(postCode)) {
-      setError(null);
-    } else {
-      setError('The post code needs to be a valid UK postcode');
+  const onChangeLocationType = (isUsingLocationService: boolean) => {
+    setIsUsingLocation(isUsingLocationService);
+    setPosition(undefined);
+    setError(null);
+
+    if (isUsingLocationService) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(updatePosition);
+      } else {
+        setError('Geolocation is not supported by this browser.');
+      }
     }
   };
 
   return (
-    <>
-      <Container size="xs" role="main">
-        <h1>Current weather</h1>
-        <section className={classes.contentView}>
-          <div className={classes.buttonsContainer} role="search">
-            <TextInput
-              type="text"
-              label="Enter the postcode to get current weather for"
-              id="postcode"
-              placeholder="Enter postcode"
-              value={postcode}
-              error={error}
-              onChange={onChangePostcode}
-            />
-          </div>
-          {!error && (
-            <div>
-              <CurrentWeather postcode={postcode} />
-            </div>
-          )}
+    <Container size="xs" role="main">
+      <h1>Current weather</h1>
+      <section className={classes.contentView}>
+        <LocationChooser onChooseLocationType={onChangeLocationType} />
+        {!isUsingLocation && (
+          <PostcodePicker
+            onPositionChanged={(pos: LatLong) => setPosition(pos)}
+            onPostcodeChanged={() => setPosition(undefined)}
+          />
+        )}
 
-          {/* <div className={classes.errorPanel} role="alert">
+        <div>
+          <CurrentWeather latLong={position} />
+        </div>
+
+        {error && (
+          <div className={classes.errorPanel} role="alert">
             <div className={classes.errorText}>{error}</div>
-          </div> */}
-        </section>
-      </Container>
-    </>
+          </div>
+        )}
+      </section>
+    </Container>
   );
 }
